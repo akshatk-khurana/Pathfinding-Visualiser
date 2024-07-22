@@ -4,7 +4,7 @@ using UnityEngine.Events;
 public class GameManager : MonoBehaviour
 {   
     public static GameManager Instance;
-    public static string searchMode = "BFS";
+    private static string searchMode = "BFS";
     private void Awake() {
         if (Instance == null) Instance = this;
     }
@@ -12,5 +12,10 @@ public class GameManager : MonoBehaviour
 
     public void StartVisualiser() {
         onStart.Invoke();
+    }
+
+    public void SetMode(string mode) {
+        searchMode = mode;
+        Debug.Log(mode);
     }
 }
