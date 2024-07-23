@@ -23,14 +23,13 @@ public class ButtonController : MonoBehaviour, IPointerClickHandler, IPointerEnt
     }
 
     public void OnPointerEnter(PointerEventData pointerEventData) {
-        if (toolTip == null) {
-            var buttonPos = pointerEventData.position;
-            toolTip = Instantiate(toolTipPrefab, new Vector2(buttonPos.x, buttonPos.y), Quaternion.identity);
-        }
-        toolTip.SetActive(true);
+        Debug.Log(this.name);
+        var buttonPos = this.transform.position;
+        Debug.Log($"x: {buttonPos.x} y: {buttonPos.y}");
+        toolTip = Instantiate(toolTipPrefab, new Vector2(buttonPos.x, buttonPos.y), Quaternion.identity);
     }
 
     public void OnPointerExit(PointerEventData pointerEventData) {
-        toolTip.SetActive(false);
+        Destroy(toolTip);
     }
 }
