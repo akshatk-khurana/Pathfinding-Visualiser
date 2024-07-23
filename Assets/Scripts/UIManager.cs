@@ -6,6 +6,8 @@ public class UIManager : MonoBehaviour
 {
     [SerializeField] private GameObject startScreen;
     [SerializeField] private GameObject selectionScreen;
+    [SerializeField] private GameObject tileScreen;
+    [SerializeField] private GameObject helpScreen;
     GameManager gm;
     void Start() {
         gm = GameManager.Instance;
@@ -15,6 +17,7 @@ public class UIManager : MonoBehaviour
     public void DeactivateStartMenu() {
         startScreen.SetActive(false);
         selectionScreen.SetActive(true);
+        tileScreen.SetActive(true);
     }
 
     public void StartButtonHandler() {
