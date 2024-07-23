@@ -21,7 +21,11 @@ public class ButtonController : MonoBehaviour, IPointerClickHandler, IPointerEnt
     }
 
     public void OnPointerEnter(PointerEventData pointerEventData) {
-        
+        var currentPos = pointerEventData.position;
+        float x = currentPos.x;
+        float y = currentPos.y;
+
+        UIManager.Instance.ChangeToolTipPos(x, y);
     }
 
     public void OnPointerExit(PointerEventData pointerEventData) {

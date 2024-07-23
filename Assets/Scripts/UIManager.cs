@@ -4,13 +4,18 @@ using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
+    public static UIManager Instance;
     [SerializeField] private GameObject startScreen;
     [SerializeField] private GameObject selectionScreen;
     [SerializeField] private GameObject tileScreen;
     [SerializeField] private GameObject helpScreen;
 
-    [SerializeField] private GameObject toolTipBOx;
+    [SerializeField] private GameObject toolTipBox;
     GameManager gm;
+
+    private void Awake() {
+        if (Instance == null) Instance = this;
+    }
     void Start() {
         gm = GameManager.Instance;
         gm.onStart.AddListener(DeactivateStartMenu);
@@ -20,6 +25,12 @@ public class UIManager : MonoBehaviour
         startScreen.SetActive(false);
         selectionScreen.SetActive(true);
         tileScreen.SetActive(true);
+    }
+
+    public void ChangeToolTipPos(float x, float y) {
+        var toolTipPos = toolTipBox.transform.position;
+        float z = toolTipPos.z;
+        toolTipBox.transform.position = new Vector3(x, y, z);
     }
 
     public void StartButtonHandler() {
