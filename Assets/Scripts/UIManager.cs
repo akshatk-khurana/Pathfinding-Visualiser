@@ -8,6 +8,8 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject selectionScreen;
     [SerializeField] private GameObject tileScreen;
     [SerializeField] private GameObject helpScreen;
+
+    [SerializeField] private GameObject toolTipBOx;
     GameManager gm;
     void Start() {
         gm = GameManager.Instance;

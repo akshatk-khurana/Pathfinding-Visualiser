@@ -4,8 +4,6 @@ using UnityEngine.UI;
 
 public class ButtonController : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
 {   
-    [SerializeField] private GameObject toolTipPrefab;
-    private GameObject toolTip;
     private string label = "Path";
     public void OnPointerClick(PointerEventData pointerEventData) {
         string currentTag = this.tag;
@@ -23,13 +21,10 @@ public class ButtonController : MonoBehaviour, IPointerClickHandler, IPointerEnt
     }
 
     public void OnPointerEnter(PointerEventData pointerEventData) {
-        Debug.Log(this.name);
-        var buttonPos = this.transform.position;
-        Debug.Log($"x: {buttonPos.x} y: {buttonPos.y}");
-        toolTip = Instantiate(toolTipPrefab, new Vector2(buttonPos.x, buttonPos.y), Quaternion.identity);
+        
     }
 
     public void OnPointerExit(PointerEventData pointerEventData) {
-        Destroy(toolTip);
+        
     }
 }
