@@ -6,6 +6,7 @@ public class ButtonController : MonoBehaviour, IPointerClickHandler, IPointerEnt
 {   
     [SerializeField] private GameObject toolTipPrefab;
     private GameObject toolTip;
+    private string label = "Path";
     public void OnPointerClick(PointerEventData pointerEventData) {
         string currentTag = this.tag;
         Image image = this.GetComponent<Image>();
@@ -17,18 +18,19 @@ public class ButtonController : MonoBehaviour, IPointerClickHandler, IPointerEnt
             gameObject.tag = "Unselected";
             image.color = Color.white;
         }
+
+        label = label == "Unselected" ? "Path" : "Wall"; 
     }
 
     public void OnPointerEnter(PointerEventData pointerEventData) {
         if (toolTip == null) {
-            var buttonPos = this.transform.position;
-            toolTip = Instantiate(toolTipPrefab, Vector2(this.transform.position))
-        } else {
-            toolTip.SetActive(true);
+            var buttonPos = pointerEventData.position;
+            toolTip = Instantiate(toolTipPrefab, new Vector2(buttonPos.x, buttonPos.y), Quaternion.identity);
         }
+        toolTip.SetActive(true);
     }
 
     public void OnPointerExit(PointerEventData pointerEventData) {
-            toolTip.SetActive(false);
+        toolTip.SetActive(false);
     }
 }
