@@ -33,14 +33,20 @@ public class ButtonController : MonoBehaviour, IPointerClickHandler, IPointerEnt
         Image image = this.GetComponent<Image>();
 
         if (Input.GetKey("s")) {
-            
+            um.resetTile("Start");
+            this.tag = "Start";
+            image.color = Color.green;
+
         } else if (Input.GetKey("e")) {
-            
+            um.resetTile("End");
+            this.tag = "End";
+            image.color = Color.red;
+
         } else {
             if (currentTag == "Unselected") {
                 gameObject.tag = "Selected";
                 image.color = Color.black;
-            } else {
+            } else if (currentTag == "Selected") {
                 gameObject.tag = "Unselected";
                 image.color = Color.white;
             }

@@ -36,7 +36,19 @@ public class UIManager : MonoBehaviour
     }
 
     public void resetTile(string tag) {
-        // GameObject chosenTile = tileScreen.FindGameObjectsWithTag(tag)[0];
+        for (int i = 0; i < tileScreen.transform.childCount; i++) {
+            GameObject child = tileScreen.transform.GetChild(i).gameObject;
+            ButtonController buttonScript = child.GetComponent<ButtonController>();
+            Image image = child.GetComponent<Image>();
+
+            if (child.tag == tag) {
+                child.tag = "Unselected";
+                buttonScript.changeThisLabel();
+                
+                image.color = Color.white;
+                break;
+            }
+        }
     }
 
     public void selectionButtonHandler() {
