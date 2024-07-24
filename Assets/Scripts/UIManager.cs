@@ -106,4 +106,8 @@ public class UIManager : MonoBehaviour
             }
         }
     }
+
+    public void displayResults() {
+        // to display results on the display screen
+    }
 }
