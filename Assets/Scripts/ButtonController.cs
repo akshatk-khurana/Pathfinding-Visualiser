@@ -7,7 +7,12 @@ public class ButtonController : MonoBehaviour, IPointerClickHandler, IPointerEnt
     private string label = "Path";
     UIManager um;
 
-    private void changeThisLabel() {
+    private void Start() {
+        um = UIManager.Instance;
+        changeThisLabel();
+    }
+
+    public void changeThisLabel() {
         string currentTag = this.tag;
 
         switch (currentTag) {
@@ -15,7 +20,7 @@ public class ButtonController : MonoBehaviour, IPointerClickHandler, IPointerEnt
                 label = "Path";
                 break;
             case "Selected":
-                label = "Path";
+                label = "Wall";
                 break;
             default:
                 label = currentTag;
@@ -23,21 +28,22 @@ public class ButtonController : MonoBehaviour, IPointerClickHandler, IPointerEnt
         }
     }
 
-    private void Start() {
-        um = UIManager.Instance;
-        changeThisLabel();
-    }
-
     public void OnPointerClick(PointerEventData pointerEventData) {
         string currentTag = this.tag;
         Image image = this.GetComponent<Image>();
 
-        if (currentTag == "Unselected") {
-            gameObject.tag = "Selected";
-            image.color = Color.black;
+        if (Input.GetKey("s")) {
+            
+        } else if (Input.GetKey("e")) {
+            
         } else {
-            gameObject.tag = "Unselected";
-            image.color = Color.white;
+            if (currentTag == "Unselected") {
+                gameObject.tag = "Selected";
+                image.color = Color.black;
+            } else {
+                gameObject.tag = "Unselected";
+                image.color = Color.white;
+            }
         }
 
         changeThisLabel();

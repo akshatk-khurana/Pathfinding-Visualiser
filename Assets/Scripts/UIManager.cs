@@ -2,11 +2,13 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using TMPro;
+using Unity.Collections;
 
 public class UIManager : MonoBehaviour
 {
     public static UIManager Instance;
     [SerializeField] private GameObject startScreen;
+    [SerializeField] private GameObject resultScreen;
     [SerializeField] private GameObject selectionScreen;
     [SerializeField] private GameObject tileScreen;
     [SerializeField] private GameObject helpScreen;
@@ -33,6 +35,10 @@ public class UIManager : MonoBehaviour
         gm.StartVisualiser();
     }
 
+    public void resetTile(string tag) {
+        // GameObject chosenTile = tileScreen.FindGameObjectsWithTag(tag)[0];
+    }
+
     public void selectionButtonHandler() {
         string buttonName = EventSystem.current.currentSelectedGameObject.name;
         switch (buttonName) {
@@ -49,6 +55,7 @@ public class UIManager : MonoBehaviour
                 break;
         }
     }
+
     public void changeLabel(string label) {
         toolTipLabel.text = label;
     }
@@ -56,7 +63,14 @@ public class UIManager : MonoBehaviour
     private void clearTileGrid() {
         for (int i = 0; i < tileScreen.transform.childCount; i++) {
             GameObject child = tileScreen.transform.GetChild(i).gameObject;
-            Destroy(child);
+            ButtonController buttonScript = child.GetComponent<ButtonController>();
+
+            Image childImage = child.GetComponent<Image>();
+
+            child.tag = "Unselected";
+            buttonScript.changeThisLabel();
+
+            childImage.color = Color.white;
         }
     }
 
