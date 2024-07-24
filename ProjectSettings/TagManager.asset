@@ -6,6 +6,8 @@ TagManager:
   tags:
   - Unselected
   - Selected
+  - Start
+  - End
   layers:
   - Default
   - TransparentFX

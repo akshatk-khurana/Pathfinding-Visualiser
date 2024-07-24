@@ -10,8 +10,6 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject selectionScreen;
     [SerializeField] private GameObject tileScreen;
     [SerializeField] private GameObject helpScreen;
-
-    [SerializeField] public GameObject toolTipBox;
     [SerializeField] private TextMeshProUGUI toolTipLabel;
     GameManager gm;
 
@@ -22,21 +20,12 @@ public class UIManager : MonoBehaviour
     void Start() {
         gm = GameManager.Instance;
         gm.onStart.AddListener(DeactivateStartMenu);
-        toolTipBox.SetActive(false);
     }
 
     public void DeactivateStartMenu() {
         startScreen.SetActive(false);
         selectionScreen.SetActive(true);
         tileScreen.SetActive(true);
-    }
-
-    public void ChangeToolTipPos(float x, float y, string label) {
-        var toolTipPos = toolTipBox.transform.position;
-        float z = toolTipPos.z;
-
-        toolTipLabel.text = label;
-        toolTipBox.transform.position = new Vector3(x + 0.25f, y + 0.25f, z);
     }
 
     public void StartButtonHandler() {
@@ -58,5 +47,8 @@ public class UIManager : MonoBehaviour
                 gm.SetMode("A*");
                 break;
         }
+    }
+    public void changeLabel(string label) {
+        toolTipLabel.text = label;
     }
 }

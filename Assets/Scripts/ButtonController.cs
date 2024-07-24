@@ -5,6 +5,11 @@ using UnityEngine.UI;
 public class ButtonController : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
 {   
     private string label = "Path";
+    UIManager um;
+
+    private void Start() {
+        um = UIManager.Instance;
+    }
     public void OnPointerClick(PointerEventData pointerEventData) {
         string currentTag = this.tag;
         Image image = this.GetComponent<Image>();
@@ -17,20 +22,16 @@ public class ButtonController : MonoBehaviour, IPointerClickHandler, IPointerEnt
             image.color = Color.white;
         }
 
-        label = label == "Unselected" ? "Path" : "Wall"; 
+        label = label == "Unselected" ? "Path" : "Wall";
+        um.changeLabel(label);
+
     }
 
     public void OnPointerEnter(PointerEventData pointerEventData) {
-        UIManager.Instance.toolTipBox.SetActive(true);
-
-        var currentPos = pointerEventData.position;
-        float x = currentPos.x;
-        float y = currentPos.y;
-
-        UIManager.Instance.ChangeToolTipPos(x, y, label);
+        um.changeLabel(label);
     }
 
     public void OnPointerExit(PointerEventData pointerEventData) {
-        UIManager.Instance.toolTipBox.SetActive(false);
+        um.changeLabel("None");
     }
 }
