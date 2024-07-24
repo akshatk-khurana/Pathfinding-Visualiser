@@ -20,6 +20,7 @@ public class UIManager : MonoBehaviour
     void Start() {
         gm = GameManager.Instance;
         gm.onStart.AddListener(DeactivateStartMenu);
+        nameTiles();
     }
 
     public void DeactivateStartMenu() {
@@ -50,5 +51,33 @@ public class UIManager : MonoBehaviour
     }
     public void changeLabel(string label) {
         toolTipLabel.text = label;
+    }
+
+    private void clearTileGrid() {
+        for (int i = 0; i < tileScreen.transform.childCount; i++) {
+            GameObject child = tileScreen.transform.GetChild(i).gameObject;
+            Destroy(child);
+        }
+    }
+
+    private void nameTiles() {
+        int x = 0;
+        int y = 0;
+
+        for (int i = 0; i < tileScreen.transform.childCount; i++) {
+            GameObject child = tileScreen.transform.GetChild(i).gameObject;
+            child.name = $"{x} {y}";
+
+            if (x == 31) {
+                x = 0;
+                if (y == 14) {
+                    break;
+                } else {
+                    y++;
+                }
+            } else {
+                x++;
+            }
+        }
     }
 }
