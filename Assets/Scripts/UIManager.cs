@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using TMPro;
+using System;
 
 public class UIManager : MonoBehaviour {
     public static UIManager Instance;
@@ -113,12 +114,19 @@ public class UIManager : MonoBehaviour {
     }
 
     private void convertTilesTo2DArray() {
-        int[,] tilesArray = new int[cols][rows];
+        // int[,] tilesArray = new int[cols, rows];
 
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
-                // pass
-            }
-        }
+        // for (int i = 0; i < rows; i++) {
+        //     for (int j = 0; j < cols; j++) {
+        //         GameObject tile = tileScreen.transform.Find($"{i} {j}");
+        //         tilesArray[i, j] = 10;
+        //     }
+        // }
+
+        // foreach (int row in tilesArray) {
+        //     foreach (int col in row) {
+        //         Console.WriteLine(col);
+        //     }
+        // }
     }
 }

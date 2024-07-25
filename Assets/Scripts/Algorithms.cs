@@ -7,10 +7,10 @@ public class Algorithms {
     }
 
     public void breadthFirstSearch() {
-        Queue<Node> queue;
+        // Queue<Node> queue;
     } 
 
     public void depthFirstSearch() {
-        Stack<Node> stack;
+        // Stack<Node> stack;
     } 
 }
