@@ -2,10 +2,8 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using TMPro;
-using Unity.Collections;
 
-public class UIManager : MonoBehaviour
-{
+public class UIManager : MonoBehaviour {
     public static UIManager Instance;
     [SerializeField] private GameObject startScreen;
     [SerializeField] private GameObject resultScreen;
@@ -14,6 +12,9 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject helpScreen;
     [SerializeField] private TextMeshProUGUI toolTipLabel;
     GameManager gm;
+
+    private int rows = 15;
+    private int cols = 32;
 
     private void Awake() {
         if (Instance == null) Instance = this;
@@ -109,5 +110,15 @@ public class UIManager : MonoBehaviour
 
     public void displayResults() {
         // to display results on the display screen
+    }
+
+    private void convertTilesTo2DArray() {
+        int[,] tilesArray = new int[cols][rows];
+
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                // pass
+            }
+        }
     }
 }

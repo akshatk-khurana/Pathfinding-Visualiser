@@ -2,7 +2,8 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class ButtonController : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
+public class ButtonController : MonoBehaviour, 
+                                IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
 {   
     private string label = "Path";
     UIManager um;
