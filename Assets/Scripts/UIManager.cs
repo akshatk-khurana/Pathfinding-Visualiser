@@ -25,6 +25,7 @@ public class UIManager : MonoBehaviour {
         gm = GameManager.Instance;
         gm.onStart.AddListener(DeactivateStartMenu);
         nameTiles();
+        convertTilesTo2DArray();
     }
 
     public void DeactivateStartMenu() {
@@ -114,19 +115,34 @@ public class UIManager : MonoBehaviour {
     }
 
     private void convertTilesTo2DArray() {
-        // int[,] tilesArray = new int[cols, rows];
+        string[,] tilesArray = new string[cols, rows];
 
-        // for (int i = 0; i < rows; i++) {
-        //     for (int j = 0; j < cols; j++) {
-        //         GameObject tile = tileScreen.transform.Find($"{i} {j}");
-        //         tilesArray[i, j] = 10;
-        //     }
-        // }
+        for (int i = 0; i < cols; i++) {
+            for (int j = 0; j < rows; j++) {
+                Transform tile = tileScreen.transform.Find($"{i} {j}");
+                GameObject tileObject = tile.GetComponent<GameObject>();
+                string tileTag = tileObject.tag;
 
-        // foreach (int row in tilesArray) {
-        //     foreach (int col in row) {
-        //         Console.WriteLine(col);
-        //     }
-        // }
+                switch (tileTag) {
+                    case "Unselected":
+                        tilesArray[i, j] = ".";
+                        break;
+                    case "Selected":
+                        tilesArray[i, j] = "x";
+                        break;
+                    case "Start":
+                        tilesArray[i, j] = "*";
+                        break;
+                    case "End":
+                        tilesArray[i, j] = "!";
+                        break;
+                }
+            }
+        }
     }
 }
+
+// . is path
+// x is a wall
+// * is the start
+// ! is the end
