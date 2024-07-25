@@ -25,7 +25,6 @@ public class UIManager : MonoBehaviour {
         gm = GameManager.Instance;
         gm.onStart.AddListener(DeactivateStartMenu);
         nameTiles();
-        convertTilesTo2DArray();
     }
 
     public void DeactivateStartMenu() {
@@ -69,6 +68,9 @@ public class UIManager : MonoBehaviour {
                 gm.SetMode("A*");
                 break;
         }
+
+        // processing code
+        string[,] start = convertTilesTo2DArray();
     }
 
     public void changeLabel(string label) {
@@ -114,8 +116,9 @@ public class UIManager : MonoBehaviour {
         // to display results on the display screen
     }
 
-    private void convertTilesTo2DArray() {
+    private string[,] convertTilesTo2DArray() {
         string[,] tilesArray = new string[cols, rows];
+        int[] start = new int[2];
 
         for (int i = 0; i < cols; i++) {
             for (int j = 0; j < rows; j++) {
@@ -132,6 +135,9 @@ public class UIManager : MonoBehaviour {
                         break;
                     case "Start":
                         tilesArray[i, j] = "*";
+
+                        start[0] = i;
+                        start[1] = j;
                         break;
                     case "End":
                         tilesArray[i, j] = "!";
@@ -139,6 +145,12 @@ public class UIManager : MonoBehaviour {
                 }
             }
         }
+
+        return tilesArray;
+    }
+
+    private bool checkStartOrEndCovered(string[,] tileArray) {
+        return false;
     }
 }
 
