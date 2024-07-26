@@ -6,11 +6,16 @@ using System;
 
 public class UIManager : MonoBehaviour {
     public static UIManager Instance;
+
+    // GameObjects
     [SerializeField] private GameObject startScreen;
-    [SerializeField] private GameObject resultScreen;
+    [SerializeField] private GameObject errorBox;
     [SerializeField] private GameObject selectionScreen;
     [SerializeField] private GameObject tileScreen;
     [SerializeField] private GameObject helpScreen;
+    
+    // Text objects
+    [SerializeField] private TextMeshProUGUI errorText;
     [SerializeField] private TextMeshProUGUI toolTipLabel;
     GameManager gm;
 
@@ -34,7 +39,36 @@ public class UIManager : MonoBehaviour {
     }
 
     public void StartButtonHandler() {
+        resetTileGrid();
         gm.StartVisualiser();
+    }
+
+    public void selectionButtonHandler() {
+        string buttonName = EventSystem.current.currentSelectedGameObject.name;
+
+        string[,] convertedArray = convertTilesTo2DArray();
+
+        if (checkEmpty(convertedArray)) {
+            Debug.Log("Empty!");
+
+            errorText.text = "Add some walls. Only start and end points present!";
+            errorBox.SetActive(true);
+        }
+
+        switch (buttonName) {
+            case "DFSButton":
+                break;
+
+            case "BFSButton":
+                break;
+
+            case "A*Button":
+                break;
+        }
+    }
+
+    public void changeLabel(string label) {
+        toolTipLabel.text = label;
     }
 
     public void resetTile(string tag) {
@@ -53,33 +87,12 @@ public class UIManager : MonoBehaviour {
         }
     }
 
-    public void selectionButtonHandler() {
-        string buttonName = EventSystem.current.currentSelectedGameObject.name;
-        switch (buttonName) {
-            case "DFSButton":
-                gm.SetMode("DFS");
-                break;
+    private void resetTileGrid() {
+        Transform tileTransform = tileScreen.transform;
+        int tileCount = tileTransform.childCount;
 
-            case "BFSButton":
-                gm.SetMode("BFS");
-                break;
-
-            case "A*Button":
-                gm.SetMode("A*");
-                break;
-        }
-
-        // processing code
-        string[,] start = convertTilesTo2DArray();
-    }
-
-    public void changeLabel(string label) {
-        toolTipLabel.text = label;
-    }
-
-    private void clearTileGrid() {
-        for (int i = 0; i < tileScreen.transform.childCount; i++) {
-            GameObject child = tileScreen.transform.GetChild(i).gameObject;
+        for (int i = 0; i < tileCount; i++) {
+            GameObject child = tileTransform.GetChild(i).gameObject;
             ButtonController buttonScript = child.GetComponent<ButtonController>();
 
             Image childImage = child.GetComponent<Image>();
@@ -89,6 +102,15 @@ public class UIManager : MonoBehaviour {
 
             childImage.color = Color.white;
         }
+
+        GameObject startTile = tileTransform.GetChild(0).gameObject;
+        GameObject endTile = tileTransform.GetChild(tileCount - 1).gameObject;
+
+        startTile.tag = "Start";
+        endTile.tag = "End";
+
+        startTile.GetComponent<Image>().color = Color.green;
+        endTile.GetComponent<Image>().color = Color.red;
     }
 
     private void nameTiles() {
@@ -123,8 +145,8 @@ public class UIManager : MonoBehaviour {
         for (int i = 0; i < cols; i++) {
             for (int j = 0; j < rows; j++) {
                 Transform tile = tileScreen.transform.Find($"{i} {j}");
-                GameObject tileObject = tile.GetComponent<GameObject>();
-                string tileTag = tileObject.tag;
+
+                string tileTag = tile.gameObject.tag;
 
                 switch (tileTag) {
                     case "Unselected":
@@ -149,8 +171,19 @@ public class UIManager : MonoBehaviour {
         return tilesArray;
     }
 
-    private bool checkStartOrEndCovered(string[,] tileArray) {
-        return false;
+    private bool checkEmpty(string[,] tileArray) {
+        bool empty = true;
+
+        for (int i = 0; i < cols; i++) {
+            for (int j = 0; j < rows; j++) { 
+                string currTile = tileArray[i, j];
+                if (tileArray[i, j] == "x") {
+                    empty = false;
+                }
+            }
+        }
+
+        return empty;
     }
 }
 
