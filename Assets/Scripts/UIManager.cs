@@ -49,20 +49,25 @@ public class UIManager : MonoBehaviour {
         string[,] convertedArray = convertTilesTo2DArray();
 
         if (checkEmpty(convertedArray)) {
-            Debug.Log("Empty!");
-
             errorText.text = "Add some walls. Only start and end points present!";
             errorBox.SetActive(true);
         }
 
+        string[,] solvedArray;
+        int[] startPos = new int[2];
+        int[] endPos = new int[2];
+
         switch (buttonName) {
             case "DFSButton":
+                solvedArray = Algorithms.depthFirstSearch(convertedArray, startPos, endPos);
                 break;
 
             case "BFSButton":
+                solvedArray = Algorithms.breadthFirstSearch(convertedArray, startPos, endPos);
                 break;
 
             case "A*Button":
+                solvedArray = Algorithms.aStarSearch(convertedArray, startPos, endPos);
                 break;
         }
     }
@@ -71,46 +76,45 @@ public class UIManager : MonoBehaviour {
         toolTipLabel.text = label;
     }
 
-    public void resetTile(string tag) {
+    public void setTile(GameObject tile, string tag, Color colour) {
+        ButtonController buttonScript = tile.GetComponent<ButtonController>();
+        Image image = tile.GetComponent<Image>();
+
+        tile.tag = tag;
+        buttonScript.changeThisLabel();
+        image.color = colour;
+    }
+
+    public GameObject getTileByTag(string tag) {
+        GameObject chosenTile;
+
         for (int i = 0; i < tileScreen.transform.childCount; i++) {
             GameObject child = tileScreen.transform.GetChild(i).gameObject;
-            ButtonController buttonScript = child.GetComponent<ButtonController>();
-            Image image = child.GetComponent<Image>();
 
             if (child.tag == tag) {
-                child.tag = "Unselected";
-                buttonScript.changeThisLabel();
-                
-                image.color = Color.white;
+                chosenTile = child;
                 break;
             }
         }
+
+        return chosenTile;
     }
 
-    private void resetTileGrid() {
+    public void resetTileGrid() {
         Transform tileTransform = tileScreen.transform;
         int tileCount = tileTransform.childCount;
 
         for (int i = 0; i < tileCount; i++) {
             GameObject child = tileTransform.GetChild(i).gameObject;
-            ButtonController buttonScript = child.GetComponent<ButtonController>();
 
-            Image childImage = child.GetComponent<Image>();
-
-            child.tag = "Unselected";
-            buttonScript.changeThisLabel();
-
-            childImage.color = Color.white;
+            if (i == 0) {
+                setTile(child, "Start", Color.green);
+            } else if (i == tileCount - 1) {
+                setTile(child, "End", Color.red);
+            } else {
+                setTile(child, "Unselected", Color.white);
+            }
         }
-
-        GameObject startTile = tileTransform.GetChild(0).gameObject;
-        GameObject endTile = tileTransform.GetChild(tileCount - 1).gameObject;
-
-        startTile.tag = "Start";
-        endTile.tag = "End";
-
-        startTile.GetComponent<Image>().color = Color.green;
-        endTile.GetComponent<Image>().color = Color.red;
     }
 
     private void nameTiles() {
@@ -134,8 +138,28 @@ public class UIManager : MonoBehaviour {
         }
     }
 
-    public void displayResults() {
-        // to display results on the display screen
+    public void displayResults(string[,] tilesArray) {
+        for (int i = 0; i < cols; i++) {
+            for (int j = 0; j < rows; j++) {
+                Transform tileTransform = tileScreen.transform.Find($"{i} {j}");
+                GameObject tile = tileTransform.gameObject;
+                
+                switch (tilesArray[i, j]) {
+                    case ".":
+                        setTile(tile, "Path", Color.white);
+                        break;
+                    case "x":
+                        setTile(tile, "Wall", Color.black);
+                        break;
+                    case "*":
+                        setTile(tile, "Start", Color.green);
+                        break;
+                    case "!":
+                        setTile(tile, "End", Color.red);
+                        break;
+                }
+            }
+        }
     }
 
     private string[,] convertTilesTo2DArray() {

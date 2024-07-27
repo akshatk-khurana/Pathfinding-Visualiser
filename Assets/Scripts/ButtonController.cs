@@ -34,12 +34,16 @@ public class ButtonController : MonoBehaviour,
         Image image = this.GetComponent<Image>();
 
         if (Input.GetKey("s")) {
-            um.resetTile("Start");
+            GameObject selectedObj = um.getTileByTag("Start");
+            um.setTile(selectedObj, "Unselected", Color.white);
+
             this.tag = "Start";
             image.color = Color.green;
 
         } else if (Input.GetKey("e")) {
-            um.resetTile("End");
+            GameObject selectedObj = um.getTileByTag("Start");
+            um.setTile(selectedObj, "Unselected", Color.white);
+            
             this.tag = "End";
             image.color = Color.red;
 
