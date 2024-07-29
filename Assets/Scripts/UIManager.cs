@@ -51,24 +51,24 @@ public class UIManager : MonoBehaviour {
         if (checkEmpty(convertedArray)) {
             errorText.text = "Add some walls. Only start and end points present!";
             errorBox.SetActive(true);
-        }
+        } else {
+            string[,] solvedArray;
+            int[] startPos = new int[2];
+            int[] endPos = new int[2];
 
-        string[,] solvedArray;
-        int[] startPos = new int[2];
-        int[] endPos = new int[2];
+            switch (buttonName) {
+                case "DFSButton":
+                    solvedArray = Algorithms.depthFirstSearch(convertedArray, startPos, endPos);
+                    break;
 
-        switch (buttonName) {
-            case "DFSButton":
-                solvedArray = Algorithms.depthFirstSearch(convertedArray, startPos, endPos);
-                break;
+                case "BFSButton":
+                    solvedArray = Algorithms.breadthFirstSearch(convertedArray, startPos, endPos);
+                    break;
 
-            case "BFSButton":
-                solvedArray = Algorithms.breadthFirstSearch(convertedArray, startPos, endPos);
-                break;
-
-            case "A*Button":
-                solvedArray = Algorithms.aStarSearch(convertedArray, startPos, endPos);
-                break;
+                case "A*Button":
+                    solvedArray = Algorithms.aStarSearch(convertedArray, startPos, endPos);
+                    break;
+            }
         }
     }
 
@@ -86,7 +86,7 @@ public class UIManager : MonoBehaviour {
     }
 
     public GameObject getTileByTag(string tag) {
-        GameObject chosenTile;
+        GameObject chosenTile = tileScreen;
 
         for (int i = 0; i < tileScreen.transform.childCount; i++) {
             GameObject child = tileScreen.transform.GetChild(i).gameObject;
@@ -201,7 +201,7 @@ public class UIManager : MonoBehaviour {
         for (int i = 0; i < cols; i++) {
             for (int j = 0; j < rows; j++) { 
                 string currTile = tileArray[i, j];
-                if (tileArray[i, j] == "x") {
+                if (currTile == "x") {
                     empty = false;
                 }
             }
