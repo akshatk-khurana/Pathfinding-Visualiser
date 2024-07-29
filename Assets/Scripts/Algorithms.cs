@@ -4,8 +4,26 @@ using System.Collections;
 using UnityEngine;
 
 public class Algorithms {
-    private List<Tuple<int, int>> findNeighbours(string[,] tiles, Tuple<int, int> tile) {
+    private static List<Tuple<int, int>> findNeighbours(Tuple<int, int> tile) {
         List<Tuple<int, int>> candidates = new List<Tuple<int, int>>();
+        int x = tile.Item1;
+        int y = tile.Item2;
+
+        if (x + 1 <= 31) {
+            candidates.Add(new Tuple<int, int>(x + 1, y));
+        }
+
+        if (0 <= x - 1) {
+            candidates.Add(new Tuple<int, int>(x - 1, y));
+        }
+
+        if (y + 1 <= 14) {
+            candidates.Add(new Tuple<int, int>(x, y + 1));
+        }
+
+        if (0 <= y - 1) {
+            candidates.Add(new Tuple<int, int>(x, y - 1));
+        }
 
         return candidates;
     }
@@ -41,6 +59,12 @@ public class Algorithms {
             }
 
             exploredStates.Add(currentNode.state);
+            
+            List<Tuple<int, int>> neighbours = findNeighbours(currentNode.state);
+
+            foreach(Tuple<int, int> n in neighbours) { 
+                Debug.Log("sfdsf");
+            } 
         }
 
         return tiles;

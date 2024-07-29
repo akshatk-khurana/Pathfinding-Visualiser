@@ -6,21 +6,17 @@ using System;
 
 public class UIManager : MonoBehaviour {
     public static UIManager Instance;
-
-    // GameObjects
     [SerializeField] private GameObject startScreen;
     [SerializeField] private GameObject errorBox;
     [SerializeField] private GameObject selectionScreen;
     [SerializeField] private GameObject tileScreen;
     [SerializeField] private GameObject helpScreen;
-    
-    // Text objects
     [SerializeField] private TextMeshProUGUI errorText;
     [SerializeField] private TextMeshProUGUI toolTipLabel;
     GameManager gm;
 
-    private int rows = 15;
-    private int cols = 32;
+    public int rows = 15;
+    public int cols = 32;
 
     private void Awake() {
         if (Instance == null) Instance = this;
