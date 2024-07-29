@@ -46,27 +46,27 @@ public class UIManager : MonoBehaviour {
     public void selectionButtonHandler() {
         string buttonName = EventSystem.current.currentSelectedGameObject.name;
 
-        string[,] convertedArray = convertTilesTo2DArray();
+        var resultsTuple = convertTilesTo2DArray();
+        string[,] convertedArray = resultsTuple.Item2;
 
         if (checkEmpty(convertedArray)) {
             errorText.text = "Add some walls. Only start and end points present!";
             errorBox.SetActive(true);
         } else {
             string[,] solvedArray;
-            int[] startPos = new int[2];
-            int[] endPos = new int[2];
+            Tuple<int, int> startPos = resultsTuple.Item1;
 
             switch (buttonName) {
                 case "DFSButton":
-                    solvedArray = Algorithms.depthFirstSearch(convertedArray, startPos, endPos);
+                    solvedArray = Algorithms.depthFirstSearch(convertedArray, startPos);
                     break;
 
                 case "BFSButton":
-                    solvedArray = Algorithms.breadthFirstSearch(convertedArray, startPos, endPos);
+                    solvedArray = Algorithms.breadthFirstSearch(convertedArray, startPos);
                     break;
 
                 case "A*Button":
-                    solvedArray = Algorithms.aStarSearch(convertedArray, startPos, endPos);
+                    solvedArray = Algorithms.aStarSearch(convertedArray, startPos);
                     break;
             }
         }
@@ -162,9 +162,9 @@ public class UIManager : MonoBehaviour {
         }
     }
 
-    private string[,] convertTilesTo2DArray() {
+    private Tuple<Tuple<int, int>, string[,]> convertTilesTo2DArray() {
         string[,] tilesArray = new string[cols, rows];
-        int[] start = new int[2];
+        Tuple<int, int> start = new Tuple<int, int>(0, 0);
 
         for (int i = 0; i < cols; i++) {
             for (int j = 0; j < rows; j++) {
@@ -181,9 +181,7 @@ public class UIManager : MonoBehaviour {
                         break;
                     case "Start":
                         tilesArray[i, j] = "*";
-
-                        start[0] = i;
-                        start[1] = j;
+                        start = new Tuple<int, int>(i, j);
                         break;
                     case "End":
                         tilesArray[i, j] = "!";
@@ -192,7 +190,8 @@ public class UIManager : MonoBehaviour {
             }
         }
 
-        return tilesArray;
+        Tuple<Tuple<int, int>, string[,]> returnInfo = new Tuple<Tuple<int, int>, string[,]>(start, tilesArray);
+        return returnInfo;
     }
 
     private bool checkEmpty(string[,] tileArray) {
