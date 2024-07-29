@@ -5,8 +5,9 @@ using UnityEngine;
 
 public class Algorithms {
     private List<Tuple<int, int>> findNeighbours(string[,] tiles, Tuple<int, int> tile) {
-        List<Tuple<int, int>>
-        //
+        List<Tuple<int, int>> candidates = new List<Tuple<int, int>>();
+
+        return candidates;
     }
     public static string[,] aStarSearch(string[,] tiles, Tuple<int, int> start) {
         return tiles;
@@ -50,14 +51,6 @@ public class Algorithms {
         return tiles;
     } 
 }
-
-//                 while node.parent is not None:
-//                     actions.append(node.action)
-//                     cells.append(node.state)
-//                     node = node.parent
-//                 return
-
-//             self.explored.add(node.state)
 
 //             for action, state in self.neighbors(node.state):
 //                 if not frontier.contains_state(state) and state not in self.explored:

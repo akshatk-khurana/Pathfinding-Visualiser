@@ -148,6 +148,9 @@ public class UIManager : MonoBehaviour {
                     case ".":
                         setTile(tile, "Path", Color.white);
                         break;
+                    case ",":
+                        setTile(tile, "Solved", Color.yellow);
+                        break;
                     case "x":
                         setTile(tile, "Wall", Color.black);
                         break;
