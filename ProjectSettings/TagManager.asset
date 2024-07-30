@@ -8,6 +8,7 @@ TagManager:
   - Selected
   - Start
   - End
+  - Solved
   layers:
   - Default
   - TransparentFX

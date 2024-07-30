@@ -4,6 +4,18 @@ using System.Collections;
 using UnityEngine;
 
 public class Algorithms {
+    private static bool containsState(Queue frontier, Tuple<int, int> state) {
+        bool contains = false;
+
+        while (frontier.Count > 0) {
+            Tuple<int, int> currState = ((Node) frontier.Dequeue()).state;
+            if (currState == state) {
+                contains = true;
+                break;
+            }
+        }
+        return contains;
+    }
     private static List<Tuple<int, int>> findNeighbours(Tuple<int, int> tile) {
         int x = tile.Item1;
         int y = tile.Item2;
@@ -19,14 +31,14 @@ public class Algorithms {
         foreach(Tuple<int, int> pos in candidates) {
             bool validX = pos.Item1 >= 0 && pos.Item1 <= UIManager.Instance.rows;
             bool validY = pos.Item2 >= 0 && pos.Item1 <= UIManager.Instance.cols;
+
             if (validX && validY) {
-                Debug.Log(pos.Item1);
-                Debug.Log(pos.Item2);
+                Debug.Log($"{pos.Item1} {pos.Item2}");
                 possible.Add(pos);
             }
         }
 
-        return candidates;
+        return possible;
     }
     public static string[,] aStarSearch(string[,] tiles, Tuple<int, int> start) {
         return tiles;
@@ -47,13 +59,12 @@ public class Algorithms {
             }
 
             Node currentNode = (Node) queueFrontier.Dequeue();
-            Tuple<int, int> currentPos = currentNode.state;
             numberExplored++;
 
-            if (tiles[currentPos.Item1, currentPos.Item2] == "!") {
+            if (tiles[currentNode.state.Item1, currentNode.state.Item2] == "!") {
+                Debug.Log("Solved!");
                 while (currentNode.parent != null) {
-                    currentPos = currentNode.state;
-                    tiles[currentPos.Item1, currentPos.Item2] = ",";
+                    tiles[currentNode.state.Item1, currentNode.state.Item2] = ",";
                     currentNode = currentNode.parent;
                 }
                 break;
@@ -63,15 +74,26 @@ public class Algorithms {
             
             List<Tuple<int, int>> neighbours = findNeighbours(currentNode.state);
 
-            foreach(Tuple<int, int> state in neighbours) { 
-                int currX = state.Item1;
-                int currY = state.Item2;
+            foreach(Tuple<int, int> neighbourState in neighbours) { 
+                int currX = neighbourState.Item1;
+                int currY = neighbourState.Item2;
 
-                // Debug.Log(currX);
-                // Debug.Log(currY);
+                bool inExplored = exploredStates.Contains(neighbourState);
+                bool isWall = tiles[currX, currY] == "x";
+                bool inFrontier = containsState(queueFrontier, neighbourState);
 
-                if (!exploredStates.Contains(state) && tiles[currX, currY] != "x") {
-                    Node child = new Node(state, currentNode);
+                Debug.Log("-------");
+                Debug.Log($"{currX} {currY}");
+                Debug.Log($"Has been explored: {inExplored}");
+                Debug.Log($"Is a wall: {isWall}");
+                Debug.Log($"Is already in the frontier: {inFrontier}");
+                Debug.Log("-------");
+
+                if (!inExplored && !isWall && !inFrontier) {
+                    Debug.Log("Child node added!");
+                    tiles[currX, currY] = ",";
+                    
+                    Node child = new Node(neighbourState, currentNode);
                     queueFrontier.Enqueue(child);
                 }
             } 
@@ -85,8 +107,3 @@ public class Algorithms {
         return tiles;
     } 
 }
-
-//             for action, state in self.neighbors(node.state):
-//                 if not frontier.contains_state(state) and state not in self.explored:
-//                     child = Node(state=state, parent=node, action=action)
-//                     frontier.add(child)

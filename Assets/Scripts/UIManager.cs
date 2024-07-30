@@ -144,13 +144,13 @@ public class UIManager : MonoBehaviour {
                 
                 switch (tilesArray[i, j]) {
                     case ".":
-                        setTile(tile, "Path", Color.white);
+                        setTile(tile, "Unselected", Color.white);
                         break;
                     case ",":
                         setTile(tile, "Solved", Color.yellow);
                         break;
                     case "x":
-                        setTile(tile, "Wall", Color.black);
+                        setTile(tile, "Selected", Color.black);
                         break;
                     case "*":
                         setTile(tile, "Start", Color.green);
@@ -215,3 +215,4 @@ public class UIManager : MonoBehaviour {
 // x is a wall
 // * is the start
 // ! is the end
+// , is solved
