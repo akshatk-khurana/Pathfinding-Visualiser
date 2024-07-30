@@ -20,6 +20,8 @@ public class Algorithms {
             bool validX = pos.Item1 >= 0 && pos.Item1 <= UIManager.Instance.rows;
             bool validY = pos.Item2 >= 0 && pos.Item1 <= UIManager.Instance.cols;
             if (validX && validY) {
+                Debug.Log(pos.Item1);
+                Debug.Log(pos.Item2);
                 possible.Add(pos);
             }
         }
@@ -64,6 +66,9 @@ public class Algorithms {
             foreach(Tuple<int, int> state in neighbours) { 
                 int currX = state.Item1;
                 int currY = state.Item2;
+
+                // Debug.Log(currX);
+                // Debug.Log(currY);
 
                 if (!exploredStates.Contains(state) && tiles[currX, currY] != "x") {
                     Node child = new Node(state, currentNode);
