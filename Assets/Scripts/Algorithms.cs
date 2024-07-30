@@ -9,7 +9,7 @@ public class Algorithms {
 
         while (frontier.Count > 0) {
             Tuple<int, int> currState = ((Node) frontier.Dequeue()).state;
-            if (currState == state) {
+            if (currState.Item1 == state.Item1 && currState.Item2 == state.Item2) {
                 contains = true;
                 break;
             }
@@ -29,11 +29,10 @@ public class Algorithms {
         candidates.Add(new Tuple<int, int>(x, y - 1));
 
         foreach(Tuple<int, int> pos in candidates) {
-            bool validX = pos.Item1 >= 0 && pos.Item1 <= UIManager.Instance.rows;
-            bool validY = pos.Item2 >= 0 && pos.Item1 <= UIManager.Instance.cols;
+            bool validX = pos.Item1 >= 0 && pos.Item1 <= UIManager.Instance.cols;
+            bool validY = pos.Item2 >= 0 && pos.Item2 <= UIManager.Instance.rows;
 
             if (validX && validY) {
-                Debug.Log($"{pos.Item1} {pos.Item2}");
                 possible.Add(pos);
             }
         }
@@ -74,6 +73,9 @@ public class Algorithms {
             
             List<Tuple<int, int>> neighbours = findNeighbours(currentNode.state);
 
+            Debug.Log($"{currentNode.state.Item1} {currentNode.state.Item2}");
+            Debug.Log(neighbours.Count);
+
             foreach(Tuple<int, int> neighbourState in neighbours) { 
                 int currX = neighbourState.Item1;
                 int currY = neighbourState.Item2;
@@ -82,15 +84,14 @@ public class Algorithms {
                 bool isWall = tiles[currX, currY] == "x";
                 bool inFrontier = containsState(queueFrontier, neighbourState);
 
-                Debug.Log("-------");
-                Debug.Log($"{currX} {currY}");
-                Debug.Log($"Has been explored: {inExplored}");
-                Debug.Log($"Is a wall: {isWall}");
-                Debug.Log($"Is already in the frontier: {inFrontier}");
-                Debug.Log("-------");
+                // string one = $"Coordinates: {currX} {currY}\n";
+                // string two = $"Has been explored: {inExplored}\n";
+                // string three = $"Is a wall: {isWall}\n";
+                // string four = $"Is already in the frontier: {inFrontier}\n";
+
+                // Debug.Log(one+two+three+four);
 
                 if (!inExplored && !isWall && !inFrontier) {
-                    Debug.Log("Child node added!");
                     tiles[currX, currY] = ",";
                     
                     Node child = new Node(neighbourState, currentNode);
