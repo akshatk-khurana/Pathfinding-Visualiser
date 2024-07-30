@@ -49,7 +49,7 @@ public class UIManager : MonoBehaviour {
             errorText.text = "Add some walls. Only start and end points present!";
             errorBox.SetActive(true);
         } else {
-            string[,] solvedArray;
+            string[,] solvedArray = new string[rows, cols];
             Tuple<int, int> startPos = resultsTuple.Item1;
 
             switch (buttonName) {
@@ -65,6 +65,8 @@ public class UIManager : MonoBehaviour {
                     solvedArray = Algorithms.aStarSearch(convertedArray, startPos);
                     break;
             }
+
+            displayResults(solvedArray);
         }
     }
 

@@ -5,24 +5,23 @@ using UnityEngine;
 
 public class Algorithms {
     private static List<Tuple<int, int>> findNeighbours(Tuple<int, int> tile) {
-        List<Tuple<int, int>> candidates = new List<Tuple<int, int>>();
         int x = tile.Item1;
         int y = tile.Item2;
 
-        if (x + 1 <= 31) {
-            candidates.Add(new Tuple<int, int>(x + 1, y));
-        }
+        List<Tuple<int, int>> possible = new List<Tuple<int, int>>();
+        List<Tuple<int, int>> candidates = new List<Tuple<int, int>>();
 
-        if (0 <= x - 1) {
-            candidates.Add(new Tuple<int, int>(x - 1, y));
-        }
+        candidates.Add(new Tuple<int, int>(x + 1, y));
+        candidates.Add(new Tuple<int, int>(x - 1, y));
+        candidates.Add(new Tuple<int, int>(x, y + 1));
+        candidates.Add(new Tuple<int, int>(x, y - 1));
 
-        if (y + 1 <= 14) {
-            candidates.Add(new Tuple<int, int>(x, y + 1));
-        }
-
-        if (0 <= y - 1) {
-            candidates.Add(new Tuple<int, int>(x, y - 1));
+        foreach(Tuple<int, int> pos in candidates) {
+            bool validX = pos.Item1 >= 0 && pos.Item1 <= UIManager.Instance.rows;
+            bool validY = pos.Item2 >= 0 && pos.Item1 <= UIManager.Instance.cols;
+            if (validX && validY) {
+                possible.Add(pos);
+            }
         }
 
         return candidates;
@@ -62,8 +61,14 @@ public class Algorithms {
             
             List<Tuple<int, int>> neighbours = findNeighbours(currentNode.state);
 
-            foreach(Tuple<int, int> n in neighbours) { 
-                Debug.Log("sfdsf");
+            foreach(Tuple<int, int> state in neighbours) { 
+                int currX = state.Item1;
+                int currY = state.Item2;
+
+                if (!exploredStates.Contains(state) && tiles[currX, currY] != "x") {
+                    Node child = new Node(state, currentNode);
+                    queueFrontier.Enqueue(child);
+                }
             } 
         }
 
