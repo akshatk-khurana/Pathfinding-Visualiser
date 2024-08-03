@@ -51,22 +51,23 @@ public class UIManager : MonoBehaviour {
         } else {
             string[,] solvedArray = new string[rows, cols];
             Tuple<int, int> startPos = resultsTuple.Item1;
+            Debug.Log($"Starting position: {startPos.Item1} {startPos.Item2}");
+            
+            // switch (buttonName) {
+            //     case "DFSButton":
+            //         solvedArray = Algorithms.depthFirstSearch(convertedArray, startPos);
+            //         break;
 
-            switch (buttonName) {
-                case "DFSButton":
-                    solvedArray = Algorithms.depthFirstSearch(convertedArray, startPos);
-                    break;
+            //     case "BFSButton":
+            //         solvedArray = Algorithms.breadthFirstSearch(convertedArray, startPos);
+            //         break;
 
-                case "BFSButton":
-                    solvedArray = Algorithms.breadthFirstSearch(convertedArray, startPos);
-                    break;
+            //     case "A*Button":
+            //         solvedArray = Algorithms.aStarSearch(convertedArray, startPos);
+            //         break;
+            // }
 
-                case "A*Button":
-                    solvedArray = Algorithms.aStarSearch(convertedArray, startPos);
-                    break;
-            }
-
-            displayResults(solvedArray);
+            // displayResults(solvedArray);
         }
     }
 
@@ -198,8 +199,8 @@ public class UIManager : MonoBehaviour {
     private bool checkEmpty(string[,] tileArray) {
         bool empty = true;
 
-        for (int i = 0; i < cols; i++) {
-            for (int j = 0; j < rows; j++) { 
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) { 
                 string currTile = tileArray[i, j];
                 if (currTile == "x") {
                     empty = false;
