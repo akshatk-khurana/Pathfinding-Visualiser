@@ -62,8 +62,8 @@ public class Algorithms {
 
             if (tiles[currentNode.state.Item1, currentNode.state.Item2] == "!") {
                 Debug.Log("Solved!");
+
                 while (currentNode.parent != null) {
-                    tiles[currentNode.state.Item1, currentNode.state.Item2] = ",";
                     currentNode = currentNode.parent;
                 }
                 break;
@@ -73,9 +73,6 @@ public class Algorithms {
             
             List<Tuple<int, int>> neighbours = findNeighbours(currentNode.state);
 
-            Debug.Log($"{currentNode.state.Item1} {currentNode.state.Item2}");
-            Debug.Log(neighbours.Count);
-
             foreach(Tuple<int, int> neighbourState in neighbours) { 
                 int currX = neighbourState.Item1;
                 int currY = neighbourState.Item2;
@@ -84,14 +81,15 @@ public class Algorithms {
                 bool isWall = tiles[currX, currY] == "x";
                 bool inFrontier = containsState(queueFrontier, neighbourState);
 
-                // string one = $"Coordinates: {currX} {currY}\n";
-                // string two = $"Has been explored: {inExplored}\n";
-                // string three = $"Is a wall: {isWall}\n";
-                // string four = $"Is already in the frontier: {inFrontier}\n";
+                string one = $"Coordinates: {currX} {currY}\n";
+                string two = $"Has been explored: {inExplored}\n";
+                string three = $"Is a wall: {isWall}\n";
+                string four = $"Is already in the frontier: {inFrontier}\n";
 
-                // Debug.Log(one+two+three+four);
+                Debug.Log(one+two+three+four);
 
-                if (!inExplored && !isWall && !inFrontier) {
+                if (inExplored == false && isWall == false && inFrontier == false) {
+                    Debug.Log("adsa");
                     tiles[currX, currY] = ",";
                     
                     Node child = new Node(neighbourState, currentNode);

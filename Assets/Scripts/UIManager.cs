@@ -52,6 +52,7 @@ public class UIManager : MonoBehaviour {
             string[,] solvedArray = new string[rows, cols];
             Tuple<int, int> startPos = resultsTuple.Item1;
             Debug.Log($"Starting position: {startPos.Item1} {startPos.Item2}");
+            solvedArray = Algorithms.breadthFirstSearch(convertedArray, startPos);
             
             // switch (buttonName) {
             //     case "DFSButton":
@@ -67,7 +68,7 @@ public class UIManager : MonoBehaviour {
             //         break;
             // }
 
-            // displayResults(solvedArray);
+            displayResults(solvedArray);
         }
     }
 
