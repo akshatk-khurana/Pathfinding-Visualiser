@@ -89,12 +89,11 @@ public class Algorithms {
                 Debug.Log(one+two+three+four);
 
                 if (inExplored == false && isWall == false && inFrontier == false) {
-                    Debug.Log("adsa");
-                    tiles[currX, currY] = ",";
-                    
                     Node child = new Node(neighbourState, currentNode);
                     queueFrontier.Enqueue(child);
                 }
+
+                tiles[currX, currY] = ",";
             } 
         }
 
