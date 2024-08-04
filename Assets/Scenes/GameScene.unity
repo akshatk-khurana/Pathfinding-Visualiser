@@ -34280,7 +34280,7 @@ MonoBehaviour:
   selectionScreen: {fileID: 576975888}
   tileScreen: {fileID: 1267194285}
   helpScreen: {fileID: 1554201181}
-  errorText: {fileID: 0}
+  errorText: {fileID: 940559683}
   toolTipLabel: {fileID: 1239360918}
   rows: 15
   cols: 32

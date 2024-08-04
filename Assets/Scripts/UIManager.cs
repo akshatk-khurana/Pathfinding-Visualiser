@@ -53,19 +53,21 @@ public class UIManager : MonoBehaviour {
         } else {
             string[,] solvedArray = new string[cols, rows];
             Tuple<int, int> startPos = resultsTuple.Item1;
-            solvedArray = Algorithms.breadthFirstSearch(convertedArray, startPos);
-            displayResults(solvedArray);
             
             switch (buttonName) {
                 case "DFSButton":
+                    solvedArray = Algorithms.depthFirstSearch(convertedArray, startPos);
                     break;
 
                 case "BFSButton":
+                    solvedArray = Algorithms.breadthFirstSearch(convertedArray, startPos);
                     break;
 
                 case "A*Button":
                     break;
             }
+
+            displayResults(solvedArray);
         }
     }
 
