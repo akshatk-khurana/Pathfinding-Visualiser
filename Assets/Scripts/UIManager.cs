@@ -1,8 +1,10 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
+using System; 
+using System.Collections.Generic;
+using System.Collections;
 using UnityEngine.UI;
 using TMPro;
-using System;
 
 public class UIManager : MonoBehaviour {
     public static UIManager Instance;
@@ -49,26 +51,21 @@ public class UIManager : MonoBehaviour {
             errorText.text = "Add some walls. Only start and end points present!";
             errorBox.SetActive(true);
         } else {
-            string[,] solvedArray = new string[rows, cols];
+            string[,] solvedArray = new string[cols, rows];
             Tuple<int, int> startPos = resultsTuple.Item1;
-            Debug.Log($"Starting position: {startPos.Item1} {startPos.Item2}");
             solvedArray = Algorithms.breadthFirstSearch(convertedArray, startPos);
-            
-            // switch (buttonName) {
-            //     case "DFSButton":
-            //         solvedArray = Algorithms.depthFirstSearch(convertedArray, startPos);
-            //         break;
-
-            //     case "BFSButton":
-            //         solvedArray = Algorithms.breadthFirstSearch(convertedArray, startPos);
-            //         break;
-
-            //     case "A*Button":
-            //         solvedArray = Algorithms.aStarSearch(convertedArray, startPos);
-            //         break;
-            // }
-
             displayResults(solvedArray);
+            
+            switch (buttonName) {
+                case "DFSButton":
+                    break;
+
+                case "BFSButton":
+                    break;
+
+                case "A*Button":
+                    break;
+            }
         }
     }
 
@@ -144,7 +141,6 @@ public class UIManager : MonoBehaviour {
 
                 Transform tileTransform = tileScreen.transform.Find($"{i} {j}");
                 GameObject tile = tileTransform.gameObject;
-                
                 switch (tilesArray[i, j]) {
                     case ".":
                         setTile(tile, "Unselected", Color.white);
