@@ -42,7 +42,7 @@ public class ButtonController : MonoBehaviour,
             image.color = Color.green;
 
         } else if (Input.GetKey("e")) {
-            GameObject selectedObj = um.getTileByTag("Start");
+            GameObject selectedObj = um.getTileByTag("End");
             um.setTile(selectedObj, "Unselected", Color.white);
             
             this.tag = "End";

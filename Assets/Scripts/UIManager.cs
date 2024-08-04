@@ -139,9 +139,10 @@ public class UIManager : MonoBehaviour {
     }
 
     public void displayResults(string[,] tilesArray) {
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
-                Transform tileTransform = tileScreen.transform.Find($"{j} {i}");
+        for (int i = 0; i < cols; i++) {
+            for (int j = 0; j < rows; j++) {
+
+                Transform tileTransform = tileScreen.transform.Find($"{i} {j}");
                 GameObject tile = tileTransform.gameObject;
                 
                 switch (tilesArray[i, j]) {
@@ -166,12 +167,12 @@ public class UIManager : MonoBehaviour {
     }
 
     private Tuple<Tuple<int, int>, string[,]> convertTilesTo2DArray() {
-        string[,] tilesArray = new string[rows, cols];
+        string[,] tilesArray = new string[cols, rows];
         Tuple<int, int> start = new Tuple<int, int>(0, 0);
 
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
-                Transform tile = tileScreen.transform.Find($"{j} {i}");
+        for (int i = 0; i < cols; i++) {
+            for (int j = 0; j < rows; j++) {
+                Transform tile = tileScreen.transform.Find($"{i} {j}");
 
                 string tileTag = tile.gameObject.tag;
 
@@ -200,8 +201,8 @@ public class UIManager : MonoBehaviour {
     private bool checkEmpty(string[,] tileArray) {
         bool empty = true;
 
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) { 
+        for (int i = 0; i < cols; i++) {
+            for (int j = 0; j < rows; j++) { 
                 string currTile = tileArray[i, j];
                 if (currTile == "x") {
                     empty = false;
