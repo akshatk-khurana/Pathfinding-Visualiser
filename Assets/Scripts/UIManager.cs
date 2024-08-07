@@ -116,6 +116,19 @@ public class UIManager : MonoBehaviour {
         }
     }
 
+    public void resetSolvedAndExplored() {
+        Transform tileTransform = tileScreen.transform;
+        int tileCount = tileTransform.childCount;
+
+        for (int i = 0; i < tileCount; i++) {
+            GameObject child = tileTransform.GetChild(i).gameObject;
+
+            if (child.tag == "Solved" && child.tag == "Explored") {
+                setTile(child, "Unselected", Color.white);
+            }
+        }
+    }
+
     private void nameTiles() {
         int x = 0;
         int y = 0;
@@ -126,6 +139,7 @@ public class UIManager : MonoBehaviour {
 
             if (x == 31) {
                 x = 0;
+                
                 if (y == 14) {
                     break;
                 } else {
@@ -136,19 +150,22 @@ public class UIManager : MonoBehaviour {
             }
         }
     }
-
     public void displayResults(string[,] tilesArray) {
         for (int i = 0; i < cols; i++) {
             for (int j = 0; j < rows; j++) {
 
                 Transform tileTransform = tileScreen.transform.Find($"{i} {j}");
                 GameObject tile = tileTransform.gameObject;
+                
                 switch (tilesArray[i, j]) {
                     case ".":
                         setTile(tile, "Unselected", Color.white);
                         break;
                     case ",":
                         setTile(tile, "Solved", Color.yellow);
+                        break;
+                    case "^":
+                        setTile(tile, "Explored", Color.blue);
                         break;
                     case "x":
                         setTile(tile, "Selected", Color.black);
@@ -217,3 +234,4 @@ public class UIManager : MonoBehaviour {
 // * is the start
 // ! is the end
 // , is solved
+// ^ is explored

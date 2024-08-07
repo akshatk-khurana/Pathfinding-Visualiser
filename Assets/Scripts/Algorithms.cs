@@ -4,33 +4,24 @@ using System.Collections;
 using UnityEngine;
 
 public class Algorithms {
-    
-    private static bool statePresent(Queue frontier, Tuple<int, int> state) {
-        bool contains = false;
-        while (frontier.Count > 0) {
-            Tuple<int, int> current = ((Node) frontier.Dequeue()).state;
-            if (current.Item1 == state.Item1) {
-                if (current.Item2 == state.Item2) {
-                    contains = true;
-                    break;
-                }
+    private static bool statePresent(Queue<Node> frontier, Tuple<int, int> state) {
+        foreach (Node node in frontier) {
+            if (node.state.Equals(state)) {
+                return true;
             }
         }
-        return contains;
+        return false;
     }
-    private static bool statePresent(Stack frontier, Tuple<int, int> state) {
-        bool contains = false;
-        while (frontier.Count > 0) {
-            Tuple<int, int> current = ((Node) frontier.Pop()).state;
-            if (current.Item1 == state.Item1) {
-                if (current.Item2 == state.Item2) {
-                    contains = true;
-                    break;
-                }
+
+    private static bool statePresent(Stack<Node> frontier, Tuple<int, int> state) {
+        foreach (Node node in frontier) {
+            if (node.state.Equals(state)) {
+                return true;
             }
         }
-        return contains;
+        return false;
     }
+
     public static List<Tuple<int, int>> findNeighbours(Tuple<int, int> tile) {
         int x = tile.Item1;
         int y = tile.Item2;
@@ -58,20 +49,18 @@ public class Algorithms {
 
     public static string[,] breadthFirstSearch(string[,] tiles, Tuple<int, int> start) {
         HashSet<Tuple<int, int>> exploredStates = new HashSet<Tuple<int, int>>(); 
-        Queue queueFrontier = new Queue();
+        Queue<Node> queueFrontier = new Queue<Node>();
 
         Node startNode = new Node(start, null);
         queueFrontier.Enqueue(startNode);
 
-        while (true) {
-            if (queueFrontier.Count == 0) {
-                Debug.Log("No possible solution.");
-                break;
-            }
+        while (queueFrontier.Count > 0) {
+            Node current = queueFrontier.Dequeue();
 
-            Node current = (Node) queueFrontier.Dequeue();
+            int cx = current.state.Item1;
+            int cy = current.state.Item2;
 
-            if (tiles[current.state.Item1, current.state.Item2] == "!") {
+            if (tiles[cx, cy] == "!") {
                 Debug.Log("Solved!");
 
                 current = current.parent;
@@ -94,6 +83,8 @@ public class Algorithms {
                         if (!statePresent(queueFrontier, state)) {
                             Node child = new Node(state, current);
                             queueFrontier.Enqueue(child);
+
+                            tiles[x, y] = "^";
                         } else {
                             Debug.Log($"Tile {x} {y} is already in the frontier!");
                         }
@@ -108,25 +99,21 @@ public class Algorithms {
 
         return tiles;
     }
-
+    
     public static string[,] depthFirstSearch(string[,] tiles, Tuple<int, int> start) {
         HashSet<Tuple<int, int>> exploredStates = new HashSet<Tuple<int, int>>(); 
-        Stack stackFrontier = new Stack();
+        Stack<Node> stackFrontier = new Stack<Node>();
 
         Node startNode = new Node(start, null);
         stackFrontier.Push(startNode);
 
-        while (true) {
-            if (stackFrontier.Count == 0) {
-                Debug.Log("No possible solution.");
-                break;
-            }
+        while (stackFrontier.Count > 0) {
+            Node current = stackFrontier.Pop();
 
-            Node current = (Node) stackFrontier.Pop();
+            int cx = current.state.Item1;
+            int cy = current.state.Item2;
 
-            if (tiles[current.state.Item1, current.state.Item2] == "!") {
-                Debug.Log("Solved!");
-
+            if (tiles[cx, cy] == "!") {
                 current = current.parent;
                 while (current.parent != null) {
                     tiles[current.state.Item1, current.state.Item2] = ",";
@@ -147,8 +134,16 @@ public class Algorithms {
                         if (!statePresent(stackFrontier, state)) {
                             Node child = new Node(state, current);
                             stackFrontier.Push(child);
+
+                            tiles[x, y] = "^";
+                        } else {
+                            Debug.Log($"Tile {x} {y} is already in the frontier!");
                         }
+                    } else {
+                        Debug.Log($"Tile {x} {y} is a wall!");
                     }
+                } else {
+                    Debug.Log($"Tile {x} {y} has already been explored!");
                 }
             } 
         }
