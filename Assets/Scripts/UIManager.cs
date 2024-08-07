@@ -1,8 +1,6 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 using System; 
-using System.Collections.Generic;
-using System.Collections;
 using UnityEngine.UI;
 using TMPro;
 
@@ -16,7 +14,6 @@ public class UIManager : MonoBehaviour {
     [SerializeField] private TextMeshProUGUI errorText;
     [SerializeField] private TextMeshProUGUI toolTipLabel;
     GameManager gm;
-
     public int rows = 15;
     public int cols = 32;
 
@@ -29,18 +26,15 @@ public class UIManager : MonoBehaviour {
         gm.onStart.AddListener(DeactivateStartMenu);
         NameTiles();
     }
-
     public void DeactivateStartMenu() {
         startScreen.SetActive(false);
         selectionScreen.SetActive(true);
         tileScreen.SetActive(true);
     }
-
     public void StartButtonHandler() {
         ResetTileGrid();
         gm.StartVisualiser();
     }
-
     public void SelectionButtonHandler() {
         string buttonName = EventSystem.current.currentSelectedGameObject.name;
 
@@ -71,11 +65,9 @@ public class UIManager : MonoBehaviour {
             DisplayResults(solvedArray);
         }
     }
-
     public void ChangeLabel(string label) {
         toolTipLabel.text = label;
     }
-
     public void SetTile(GameObject tile, string tag, Color colour) {
         ButtonController buttonScript = tile.GetComponent<ButtonController>();
         Image image = tile.GetComponent<Image>();
@@ -84,7 +76,6 @@ public class UIManager : MonoBehaviour {
         buttonScript.ChangeThisLabel();
         image.color = colour;
     }
-
     public GameObject GetTileByTag(string tag) {
         GameObject chosenTile = tileScreen;
         for (int i = 0; i < tileScreen.transform.childCount; i++) {
@@ -97,7 +88,6 @@ public class UIManager : MonoBehaviour {
         }
         return chosenTile;
     }
-
     public void ResetTileGrid() {
         Transform tileTransform = tileScreen.transform;
         int tileCount = tileTransform.childCount;

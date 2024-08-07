@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -5,16 +6,19 @@ using UnityEngine.UI;
 public class ButtonController : MonoBehaviour, 
                                 IPointerClickHandler, 
                                 IPointerEnterHandler, 
-                                IPointerExitHandler, 
+                                IPointerExitHandler,
+                                IDragHandler,
+                                IEndDragHandler,
                                 IBeginDragHandler {   
     private string label = "Path";
     UIManager um;
+    GameManager gm;
 
     private void Start() {
         um = UIManager.Instance;
+        gm = GameManager.Instance;
         ChangeThisLabel();
     }
-
     public void ChangeThisLabel() {
         string currentTag = this.tag;
 
@@ -30,7 +34,6 @@ public class ButtonController : MonoBehaviour,
                 break;
         }
     }
-    
     private void OnPointOrDrag() {
         string currentTag = this.tag;
         Image image = this.GetComponent<Image>();
@@ -67,12 +70,22 @@ public class ButtonController : MonoBehaviour,
         OnPointOrDrag();
     }
     public void OnPointerEnter(PointerEventData pointerEventData) {
+        if (gm.pointerDragging) {
+            OnPointOrDrag();
+        }
         um.ChangeLabel(label);
     }
     public void OnPointerExit(PointerEventData pointerEventData) {
         um.ChangeLabel("None");
     }
-    public void OnBeginDrag(PointerEventData pointerEventData) {
+    public void OnBeginDrag(PointerEventData data) {
+        gm.pointerDragging = true;
         OnPointOrDrag();
+    }
+    public void OnDrag(PointerEventData data) {
+
+    }
+    public void OnEndDrag(PointerEventData data) {
+        gm.pointerDragging = false;
     }
 }

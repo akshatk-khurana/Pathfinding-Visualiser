@@ -4,7 +4,12 @@ using UnityEngine;
 
 public class Algorithms {
     private static int ManhattanDistance(Tuple<int, int> start, Tuple<int, int> end) {
-        return 0;
+        int dX = start.Item1 – end.Item1;
+        int dY = start.Item2 – end.Item2;
+
+        int distanceX = Math.Abs(dX);
+        int distanceY = Math.Abs(dY);
+        return distanceX + distanceY;
     }
 
     private static bool StatePresent(Queue<Node> frontier, Tuple<int, int> state) {
