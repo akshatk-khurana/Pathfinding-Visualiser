@@ -27,7 +27,7 @@ public class UIManager : MonoBehaviour {
     void Start() {
         gm = GameManager.Instance;
         gm.onStart.AddListener(DeactivateStartMenu);
-        nameTiles();
+        NameTiles();
     }
 
     public void DeactivateStartMenu() {
@@ -37,7 +37,7 @@ public class UIManager : MonoBehaviour {
     }
 
     public void StartButtonHandler() {
-        resetTileGrid();
+        ResetTileGrid();
         gm.StartVisualiser();
     }
 
@@ -76,7 +76,7 @@ public class UIManager : MonoBehaviour {
         toolTipLabel.text = label;
     }
 
-    public void setTile(GameObject tile, string tag, Color colour) {
+    public void SetTile(GameObject tile, string tag, Color colour) {
         ButtonController buttonScript = tile.GetComponent<ButtonController>();
         Image image = tile.GetComponent<Image>();
 
@@ -87,7 +87,6 @@ public class UIManager : MonoBehaviour {
 
     public GameObject GetTileByTag(string tag) {
         GameObject chosenTile = tileScreen;
-
         for (int i = 0; i < tileScreen.transform.childCount; i++) {
             GameObject child = tileScreen.transform.GetChild(i).gameObject;
 
@@ -96,7 +95,6 @@ public class UIManager : MonoBehaviour {
                 break;
             }
         }
-
         return chosenTile;
     }
 
@@ -106,17 +104,22 @@ public class UIManager : MonoBehaviour {
 
         for (int i = 0; i < tileCount; i++) {
             GameObject child = tileTransform.GetChild(i).gameObject;
-
+            Color color = Color.white;
+            string tag = "Unselected";
+            
             if (i == 0) {
-                setTile(child, "Start", Color.green);
-            } else if (i == tileCount - 1) {
-                setTile(child, "End", Color.red);
-            } else {
-                setTile(child, "Unselected", Color.white);
+                tag = "Start";
+                color = Color.green;
             }
+            
+            if (i == tileCount - 1) {
+                tag = "End";
+                color = Color.red;
+            }
+
+            SetTile(child, tag, color);
         }
     }
-
     public void ResetSolvedAndExplored() {
         Transform tileTransform = tileScreen.transform;
         int tileCount = tileTransform.childCount;
@@ -124,12 +127,11 @@ public class UIManager : MonoBehaviour {
         for (int i = 0; i < tileCount; i++) {
             GameObject child = tileTransform.GetChild(i).gameObject;
 
-            if (child.tag == "Solved" && child.tag == "Explored") {
-                setTile(child, "Unselected", Color.white);
+            if (child.tag == "Solved") {
+                SetTile(child, "Unselected", Color.white);
             }
         }
     }
-
     private void NameTiles() {
         int x = 0;
         int y = 0;
@@ -158,26 +160,29 @@ public class UIManager : MonoBehaviour {
                 Transform tileTransform = tileScreen.transform.Find($"{i} {j}");
                 GameObject tile = tileTransform.gameObject;
 
+                Color color = Color.white;
+                string tag = "Unselected";
+
                 switch (tilesArray[i, j]) {
-                    case ".":
-                        setTile(tile, "Unselected", Color.white);
-                        break;
                     case ",":
-                        setTile(tile, "Solved", Color.yellow);
-                        break;
-                    case "^":
-                        setTile(tile, "Explored", Color.blue);
+                        tag = "Solved";
+                        color = Color.yellow;
                         break;
                     case "x":
-                        setTile(tile, "Selected", Color.black);
+                        tag = "Selected";
+                        color = Color.black;
                         break;
                     case "*":
-                        setTile(tile, "Start", Color.green);
+                        tag = "Start";
+                        color = Color.green;
                         break;
                     case "!":
-                        setTile(tile, "End", Color.red);
+                        tag = "End";
+                        color = Color.red;
                         break;
                 }
+
+                SetTile(tile, tag, color);
             }
         }
     }
@@ -212,7 +217,6 @@ public class UIManager : MonoBehaviour {
         Tuple<Tuple<int, int>, string[,]> returnInfo = new Tuple<Tuple<int, int>, string[,]>(start, tilesArray);
         return returnInfo;
     }
-
     private bool CheckEmpty(string[,] tileArray) {
         bool empty = true;
 
@@ -234,4 +238,3 @@ public class UIManager : MonoBehaviour {
 // * is the start
 // ! is the end
 // , is solved
-// ^ is explored

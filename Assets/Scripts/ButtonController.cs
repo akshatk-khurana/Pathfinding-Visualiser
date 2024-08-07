@@ -34,17 +34,18 @@ public class ButtonController : MonoBehaviour,
     private void OnPointOrDrag() {
         string currentTag = this.tag;
         Image image = this.GetComponent<Image>();
+        GameObject selectedObj;
 
         if (Input.GetKey("s")) {
-            GameObject selectedObj = um.getTileByTag("Start");
-            um.setTile(selectedObj, "Unselected", Color.white);
+            selectedObj = um.GetTileByTag("Start");
+            um.SetTile(selectedObj, "Unselected", Color.white);
 
             this.tag = "Start";
             image.color = Color.green;
 
         } else if (Input.GetKey("e")) {
-            GameObject selectedObj = um.getTileByTag("End");
-            um.setTile(selectedObj, "Unselected", Color.white);
+            selectedObj = um.GetTileByTag("End");
+            um.SetTile(selectedObj, "Unselected", Color.white);
             
             this.tag = "End";
             image.color = Color.red;
