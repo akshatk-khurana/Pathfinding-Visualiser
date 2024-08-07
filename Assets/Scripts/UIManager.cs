@@ -41,13 +41,13 @@ public class UIManager : MonoBehaviour {
         gm.StartVisualiser();
     }
 
-    public void selectionButtonHandler() {
+    public void SelectionButtonHandler() {
         string buttonName = EventSystem.current.currentSelectedGameObject.name;
 
-        var resultsTuple = convertTilesTo2DArray();
+        var resultsTuple = ConvertTilesToArray();
         string[,] convertedArray = resultsTuple.Item2;
 
-        if (checkEmpty(convertedArray)) {
+        if (CheckEmpty(convertedArray)) {
             errorText.text = "Add some walls. Only start and end points present!";
             errorBox.SetActive(true);
         } else {
@@ -56,22 +56,23 @@ public class UIManager : MonoBehaviour {
             
             switch (buttonName) {
                 case "DFSButton":
-                    solvedArray = Algorithms.depthFirstSearch(convertedArray, startPos);
+                    solvedArray = Algorithms.DepthFirstSearch(convertedArray, startPos);
                     break;
 
                 case "BFSButton":
-                    solvedArray = Algorithms.breadthFirstSearch(convertedArray, startPos);
+                    solvedArray = Algorithms.BreadthFirstSearch(convertedArray, startPos);
                     break;
 
                 case "A*Button":
+                    solvedArray = Algorithms.AStarSearch(convertedArray, startPos);
                     break;
             }
 
-            displayResults(solvedArray);
+            DisplayResults(solvedArray);
         }
     }
 
-    public void changeLabel(string label) {
+    public void ChangeLabel(string label) {
         toolTipLabel.text = label;
     }
 
@@ -80,11 +81,11 @@ public class UIManager : MonoBehaviour {
         Image image = tile.GetComponent<Image>();
 
         tile.tag = tag;
-        buttonScript.changeThisLabel();
+        buttonScript.ChangeThisLabel();
         image.color = colour;
     }
 
-    public GameObject getTileByTag(string tag) {
+    public GameObject GetTileByTag(string tag) {
         GameObject chosenTile = tileScreen;
 
         for (int i = 0; i < tileScreen.transform.childCount; i++) {
@@ -99,7 +100,7 @@ public class UIManager : MonoBehaviour {
         return chosenTile;
     }
 
-    public void resetTileGrid() {
+    public void ResetTileGrid() {
         Transform tileTransform = tileScreen.transform;
         int tileCount = tileTransform.childCount;
 
@@ -116,7 +117,7 @@ public class UIManager : MonoBehaviour {
         }
     }
 
-    public void resetSolvedAndExplored() {
+    public void ResetSolvedAndExplored() {
         Transform tileTransform = tileScreen.transform;
         int tileCount = tileTransform.childCount;
 
@@ -129,7 +130,7 @@ public class UIManager : MonoBehaviour {
         }
     }
 
-    private void nameTiles() {
+    private void NameTiles() {
         int x = 0;
         int y = 0;
 
@@ -150,13 +151,13 @@ public class UIManager : MonoBehaviour {
             }
         }
     }
-    public void displayResults(string[,] tilesArray) {
+    public void DisplayResults(string[,] tilesArray) {
         for (int i = 0; i < cols; i++) {
             for (int j = 0; j < rows; j++) {
 
                 Transform tileTransform = tileScreen.transform.Find($"{i} {j}");
                 GameObject tile = tileTransform.gameObject;
-                
+
                 switch (tilesArray[i, j]) {
                     case ".":
                         setTile(tile, "Unselected", Color.white);
@@ -180,8 +181,7 @@ public class UIManager : MonoBehaviour {
             }
         }
     }
-
-    private Tuple<Tuple<int, int>, string[,]> convertTilesTo2DArray() {
+    private Tuple<Tuple<int, int>, string[,]> ConvertTilesToArray() {
         string[,] tilesArray = new string[cols, rows];
         Tuple<int, int> start = new Tuple<int, int>(0, 0);
 
@@ -213,7 +213,7 @@ public class UIManager : MonoBehaviour {
         return returnInfo;
     }
 
-    private bool checkEmpty(string[,] tileArray) {
+    private bool CheckEmpty(string[,] tileArray) {
         bool empty = true;
 
         for (int i = 0; i < cols; i++) {

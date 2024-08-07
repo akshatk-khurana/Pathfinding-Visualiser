@@ -9,6 +9,7 @@ TagManager:
   - Start
   - End
   - Solved
+  - Explored
   layers:
   - Default
   - TransparentFX

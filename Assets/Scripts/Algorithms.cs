@@ -1,10 +1,13 @@
 using System; 
 using System.Collections.Generic;
-using System.Collections;
 using UnityEngine;
 
 public class Algorithms {
-    private static bool statePresent(Queue<Node> frontier, Tuple<int, int> state) {
+    private static int ManhattanDistance(Tuple<int, int> start, Tuple<int, int> end) {
+        return 0;
+    }
+
+    private static bool StatePresent(Queue<Node> frontier, Tuple<int, int> state) {
         foreach (Node node in frontier) {
             if (node.state.Equals(state)) {
                 return true;
@@ -13,7 +16,7 @@ public class Algorithms {
         return false;
     }
 
-    private static bool statePresent(Stack<Node> frontier, Tuple<int, int> state) {
+    private static bool StatePresent(Stack<Node> frontier, Tuple<int, int> state) {
         foreach (Node node in frontier) {
             if (node.state.Equals(state)) {
                 return true;
@@ -22,7 +25,7 @@ public class Algorithms {
         return false;
     }
 
-    public static List<Tuple<int, int>> findNeighbours(Tuple<int, int> tile) {
+    public static List<Tuple<int, int>> FindNeighbours(Tuple<int, int> tile) {
         int x = tile.Item1;
         int y = tile.Item2;
 
@@ -47,7 +50,7 @@ public class Algorithms {
         return possible;
     }
 
-    public static string[,] breadthFirstSearch(string[,] tiles, Tuple<int, int> start) {
+    public static string[,] BreadthFirstSearch(string[,] tiles, Tuple<int, int> start) {
         HashSet<Tuple<int, int>> exploredStates = new HashSet<Tuple<int, int>>(); 
         Queue<Node> queueFrontier = new Queue<Node>();
 
@@ -61,8 +64,6 @@ public class Algorithms {
             int cy = current.state.Item2;
 
             if (tiles[cx, cy] == "!") {
-                Debug.Log("Solved!");
-
                 current = current.parent;
                 while (current.parent != null) {
                     tiles[current.state.Item1, current.state.Item2] = ",";
@@ -70,21 +71,23 @@ public class Algorithms {
                 }
 
                 break;
+            } else {
+                if (tiles[cx, cy] != "*") {
+                    tiles[cx, cy] = "^";
+                }    
             }
 
             exploredStates.Add(current.state);
 
-            foreach(Tuple<int, int> state in findNeighbours(current.state)) { 
+            foreach(Tuple<int, int> state in FindNeighbours(current.state)) { 
                 int x = state.Item1;
                 int y = state.Item2;
 
                 if (!exploredStates.Contains(state)) {
                     if (tiles[x, y] != "x") {
-                        if (!statePresent(queueFrontier, state)) {
+                        if (!StatePresent(queueFrontier, state)) {
                             Node child = new Node(state, current);
                             queueFrontier.Enqueue(child);
-
-                            tiles[x, y] = "^";
                         } else {
                             Debug.Log($"Tile {x} {y} is already in the frontier!");
                         }
@@ -100,7 +103,7 @@ public class Algorithms {
         return tiles;
     }
     
-    public static string[,] depthFirstSearch(string[,] tiles, Tuple<int, int> start) {
+    public static string[,] DepthFirstSearch(string[,] tiles, Tuple<int, int> start) {
         HashSet<Tuple<int, int>> exploredStates = new HashSet<Tuple<int, int>>(); 
         Stack<Node> stackFrontier = new Stack<Node>();
 
@@ -121,21 +124,23 @@ public class Algorithms {
                 }
 
                 break;
+            } else {
+                if (tiles[cx, cy] != "*") {
+                    tiles[cx, cy] = "^";
+                }    
             }
 
             exploredStates.Add(current.state);
 
-            foreach(Tuple<int, int> state in findNeighbours(current.state)) { 
+            foreach(Tuple<int, int> state in FindNeighbours(current.state)) { 
                 int x = state.Item1;
                 int y = state.Item2;
 
                 if (!exploredStates.Contains(state)) {
                     if (tiles[x, y] != "x") {
-                        if (!statePresent(stackFrontier, state)) {
+                        if (!StatePresent(stackFrontier, state)) {
                             Node child = new Node(state, current);
                             stackFrontier.Push(child);
-
-                            tiles[x, y] = "^";
                         } else {
                             Debug.Log($"Tile {x} {y} is already in the frontier!");
                         }
@@ -151,7 +156,7 @@ public class Algorithms {
         return tiles;
     } 
 
-    public static string[,] aStarSearch(string[,] tiles, Tuple<int, int> start) {
+    public static string[,] AStarSearch(string[,] tiles, Tuple<int, int> start) {
         return tiles;
     }
 }

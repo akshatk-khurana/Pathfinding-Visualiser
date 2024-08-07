@@ -5,16 +5,17 @@ using UnityEngine.UI;
 public class ButtonController : MonoBehaviour, 
                                 IPointerClickHandler, 
                                 IPointerEnterHandler, 
-                                IPointerExitHandler {   
+                                IPointerExitHandler, 
+                                IBeginDragHandler {   
     private string label = "Path";
     UIManager um;
 
     private void Start() {
         um = UIManager.Instance;
-        changeThisLabel();
+        ChangeThisLabel();
     }
 
-    public void changeThisLabel() {
+    public void ChangeThisLabel() {
         string currentTag = this.tag;
 
         switch (currentTag) {
@@ -29,8 +30,8 @@ public class ButtonController : MonoBehaviour,
                 break;
         }
     }
-
-    public void OnPointerClick(PointerEventData pointerEventData) {
+    
+    private void OnPointOrDrag() {
         string currentTag = this.tag;
         Image image = this.GetComponent<Image>();
 
@@ -58,15 +59,19 @@ public class ButtonController : MonoBehaviour,
             }
         }
 
-        changeThisLabel();
-        um.changeLabel(label);
+        ChangeThisLabel();
+        um.ChangeLabel(label);
     }
-
+    public void OnPointerClick(PointerEventData pointerEventData) {
+        OnPointOrDrag();
+    }
     public void OnPointerEnter(PointerEventData pointerEventData) {
-        um.changeLabel(label);
+        um.ChangeLabel(label);
     }
-
     public void OnPointerExit(PointerEventData pointerEventData) {
-        um.changeLabel("None");
+        um.ChangeLabel("None");
+    }
+    public void OnBeginDrag(PointerEventData pointerEventData) {
+        OnPointOrDrag();
     }
 }
