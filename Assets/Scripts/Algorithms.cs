@@ -4,14 +4,14 @@ using UnityEngine;
 
 public class Algorithms {
     private static int ManhattanDistance(Tuple<int, int> start, Tuple<int, int> end) {
-        int dX = start.Item1 – end.Item1;
-        int dY = start.Item2 – end.Item2;
+        int distanceX = start.Item1 - end.Item1;
+        int distanceY = start.Item2 - end.Item2;
 
-        int distanceX = Math.Abs(dX);
-        int distanceY = Math.Abs(dY);
+        distanceX =  Math.Abs(distanceX);
+        distanceY = Math.Abs(distanceY);
+
         return distanceX + distanceY;
     }
-
     private static bool StatePresent(Queue<Node> frontier, Tuple<int, int> state) {
         foreach (Node node in frontier) {
             if (node.state.Equals(state)) {
@@ -20,7 +20,6 @@ public class Algorithms {
         }
         return false;
     }
-
     private static bool StatePresent(Stack<Node> frontier, Tuple<int, int> state) {
         foreach (Node node in frontier) {
             if (node.state.Equals(state)) {
@@ -29,7 +28,6 @@ public class Algorithms {
         }
         return false;
     }
-
     public static List<Tuple<int, int>> FindNeighbours(Tuple<int, int> tile) {
         int x = tile.Item1;
         int y = tile.Item2;
@@ -54,7 +52,6 @@ public class Algorithms {
 
         return possible;
     }
-
     public static string[,] BreadthFirstSearch(string[,] tiles, Tuple<int, int> start) {
         HashSet<Tuple<int, int>> exploredStates = new HashSet<Tuple<int, int>>(); 
         Queue<Node> queueFrontier = new Queue<Node>();
@@ -107,7 +104,6 @@ public class Algorithms {
 
         return tiles;
     }
-    
     public static string[,] DepthFirstSearch(string[,] tiles, Tuple<int, int> start) {
         HashSet<Tuple<int, int>> exploredStates = new HashSet<Tuple<int, int>>(); 
         Stack<Node> stackFrontier = new Stack<Node>();
@@ -160,8 +156,58 @@ public class Algorithms {
 
         return tiles;
     } 
+    public static string[,] AStarSearch(string[,] tiles, Tuple<int, int> start, Tuple<int, int> target) {
+        List<AStarNode> openList = new List<AStarNode>(); 
+        List<AStarNode> closedList = new List<AStarNode>();
+        
+        AStarNode startNode = new AStarNode(start, null, 0, ManhattanDistance(start, target));
+        openList.Add(startNode);
 
-    public static string[,] AStarSearch(string[,] tiles, Tuple<int, int> start) {
+        while (openList.Count > 0) {
+            AStarNode lowestFNode = new AStarNode(null, null, int.MaxValue, ManhattanDistance(start, target));
+            foreach (AStarNode node in openList) {
+                if (node.F < lowestFNode.F) {
+                    lowestFNode = node;
+                }
+            }
+
+            openList.Remove(lowestFNode);
+        }
+
         return tiles;
     }
 }
+
+// 1.  Initialize the open list
+// 2.  Initialize the closed list
+//     put the starting node on the open 
+//     list (you can leave its f at zero)
+// 3.  while the open list is not empty
+//     a) find the node with the least f on 
+//        the open list, call it "q"
+//     b) pop q off the open list
+  
+//     c) generate q's 8 successors and set their 
+//        parents to q
+   
+//     d) for each successor
+//         i) if successor is the goal, stop search
+        
+//         ii) else, compute both g and h for successor
+//           successor.g = q.g + distance between 
+//                               successor and q
+//           successor.h = distance from goal to 
+//           successor 
+          
+//           successor.f = successor.g + successor.h
+//         iii) if a node with the same position as 
+//             successor is in the OPEN list which has a 
+//            lower f than successor, skip this successor
+//         iV) if a node with the same position as 
+//             successor  is in the CLOSED list which has
+//             a lower f than successor, skip this successor
+//             otherwise, add  the node to the open list
+//      end (for loop)
+  
+//     e) push q on the closed list
+//     end (while loop)

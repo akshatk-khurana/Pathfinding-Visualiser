@@ -20,7 +20,6 @@ public class UIManager : MonoBehaviour {
     private void Awake() {
         if (Instance == null) Instance = this;
     }
-    
     void Start() {
         gm = GameManager.Instance;
         gm.onStart.AddListener(DeactivateStartMenu);
@@ -46,7 +45,9 @@ public class UIManager : MonoBehaviour {
             errorBox.SetActive(true);
         } else {
             string[,] solvedArray = new string[cols, rows];
-            Tuple<int, int> startPos = resultsTuple.Item1;
+            Tuple<Tuple<int, int>, Tuple<int, int>> positions = resultsTuple.Item1;
+            Tuple<int, int> startPos = positions.Item1;
+            Tuple<int, int> endPos = positions.Item2;
             
             switch (buttonName) {
                 case "DFSButton":
@@ -58,11 +59,17 @@ public class UIManager : MonoBehaviour {
                     break;
 
                 case "A*Button":
-                    solvedArray = Algorithms.AStarSearch(convertedArray, startPos);
+                    solvedArray = Algorithms.AStarSearch(convertedArray, startPos, endPos);
                     break;
             }
 
-            DisplayResults(solvedArray);
+            if (convertedArray == solvedArray) {
+                // No solution
+                errorText.text = "No solution found!";
+                errorBox.SetActive(true);
+            } else {
+                DisplayResults(solvedArray);
+            }
         }
     }
     public void ChangeLabel(string label) {
@@ -176,9 +183,10 @@ public class UIManager : MonoBehaviour {
             }
         }
     }
-    private Tuple<Tuple<int, int>, string[,]> ConvertTilesToArray() {
+    private Tuple<Tuple<Tuple<int, int>, Tuple<int, int>>, string[,]> ConvertTilesToArray() {
         string[,] tilesArray = new string[cols, rows];
         Tuple<int, int> start = new Tuple<int, int>(0, 0);
+        Tuple<int, int> end = new Tuple<int, int>(31, 14);
 
         for (int i = 0; i < cols; i++) {
             for (int j = 0; j < rows; j++) {
@@ -199,12 +207,26 @@ public class UIManager : MonoBehaviour {
                         break;
                     case "End":
                         tilesArray[i, j] = "!";
+                        end = new Tuple<int, int>(i, j);
                         break;
                 }
             }
         }
 
-        Tuple<Tuple<int, int>, string[,]> returnInfo = new Tuple<Tuple<int, int>, string[,]>(start, tilesArray);
+        Tuple<Tuple<int, int>, Tuple<int, int>> positions = new Tuple<Tuple<int, int>, Tuple<int, int>>(start, end);
+        Tuple<
+            Tuple<
+                Tuple<int, int>, 
+                Tuple<int, int>
+            >,
+            string[,]
+        > returnInfo = new Tuple<
+                               Tuple<
+                                   Tuple<int, int>, 
+                                   Tuple<int, int>
+                                   >, 
+                                   string[,]
+                            >(positions, tilesArray);
         return returnInfo;
     }
     private bool CheckEmpty(string[,] tileArray) {
