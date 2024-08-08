@@ -62,14 +62,11 @@ public class UIManager : MonoBehaviour {
                     solvedArray = Algorithms.AStarSearch(convertedArray, startPos, endPos);
                     break;
             }
-
-            if (convertedArray == solvedArray) {
-                // No solution
-                errorText.text = "No solution found!";
-                errorBox.SetActive(true);
-            } else {
-                DisplayResults(solvedArray);
+            
+            if (CheckEqual(solvedArray, resultsTuple.Item2)) {
+                Debug.Log("Unsolved");
             }
+            DisplayResults(solvedArray);
         }
     }
     public void ChangeLabel(string label) {
@@ -242,6 +239,17 @@ public class UIManager : MonoBehaviour {
         }
 
         return empty;
+    }
+    private bool CheckEqual(string[,] original, string[,] modified) {
+        for (int i = 0; i < cols; i++) {
+            for (int j = 0; j < rows; j++) {
+                if (original[i, j] == modified[i, j]) {
+                    return true;
+                }
+            }
+        } 
+
+        return false;
     }
 }
 

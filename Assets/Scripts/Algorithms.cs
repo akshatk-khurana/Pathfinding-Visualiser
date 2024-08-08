@@ -172,6 +172,15 @@ public class Algorithms {
             }
 
             openList.Remove(lowestFNode);
+
+            foreach(Tuple<int, int> state in FindNeighbours(lowestFNode.state)) { 
+                int x = state.Item1;
+                int y = state.Item2;
+
+                if (tiles[x, y] != "x") {
+                    
+                }
+            } 
         }
 
         return tiles;
