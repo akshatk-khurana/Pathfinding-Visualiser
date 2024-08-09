@@ -13,7 +13,6 @@ public class ButtonController : MonoBehaviour,
     private string label = "Path";
     UIManager um;
     GameManager gm;
-
     private void Start() {
         um = UIManager.Instance;
         gm = GameManager.Instance;
@@ -39,20 +38,19 @@ public class ButtonController : MonoBehaviour,
         Image image = this.GetComponent<Image>();
         GameObject selectedObj;
 
-        if (Input.GetKey("s")) {
+        if (Input.GetKey("s") && this.tag != "End") {
             selectedObj = um.GetTileByTag("Start");
             um.SetTile(selectedObj, "Unselected", Color.white);
 
             this.tag = "Start";
             image.color = Color.green;
 
-        } else if (Input.GetKey("e")) {
+        } else if (Input.GetKey("e") && this.tag != "Start") {
             selectedObj = um.GetTileByTag("End");
             um.SetTile(selectedObj, "Unselected", Color.white);
             
             this.tag = "End";
             image.color = Color.red;
-
         } else {
             if (currentTag == "Unselected") {
                 gameObject.tag = "Selected";

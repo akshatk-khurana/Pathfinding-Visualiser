@@ -28,6 +28,16 @@ public class Algorithms {
         }
         return false;
     }
+    private static bool StatePresentAndLower(List<AStarNode> frontier, Tuple<int, int> state, int F) {
+        foreach (AStarNode node in frontier) {
+            if (node.state.Equals(state)) {
+                if (node.F < F) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
     public static List<Tuple<int, int>> FindNeighbours(Tuple<int, int> tile) {
         int x = tile.Item1;
         int y = tile.Item2;
@@ -52,9 +62,12 @@ public class Algorithms {
 
         return possible;
     }
-    public static string[,] BreadthFirstSearch(string[,] tiles, Tuple<int, int> start) {
+    public static Tuple<string[,], Tuple<int, float>> BreadthFirstSearch(string[,] tiles, Tuple<int, int> start) {
         HashSet<Tuple<int, int>> exploredStates = new HashSet<Tuple<int, int>>(); 
         Queue<Node> queueFrontier = new Queue<Node>();
+
+        float timeTaken = 0;
+        int exploredCount = 0;
 
         Node startNode = new Node(start, null);
         queueFrontier.Enqueue(startNode);
@@ -79,6 +92,7 @@ public class Algorithms {
                 }    
             }
 
+            exploredCount++;
             exploredStates.Add(current.state);
 
             foreach(Tuple<int, int> state in FindNeighbours(current.state)) { 
@@ -90,23 +104,25 @@ public class Algorithms {
                         if (!StatePresent(queueFrontier, state)) {
                             Node child = new Node(state, current);
                             queueFrontier.Enqueue(child);
-                        } else {
-                            Debug.Log($"Tile {x} {y} is already in the frontier!");
-                        }
-                    } else {
-                        Debug.Log($"Tile {x} {y} is a wall!");
+                        } 
                     }
-                } else {
-                    Debug.Log($"Tile {x} {y} has already been explored!");
                 }
             } 
         }
 
-        return tiles;
+        Tuple<string[,], Tuple<int, float>> results = new Tuple<string[,], Tuple<int, float>>(
+            tiles,
+            new Tuple<int, float>(exploredCount, timeTaken)
+        );
+
+        return results;
     }
-    public static string[,] DepthFirstSearch(string[,] tiles, Tuple<int, int> start) {
+    public static Tuple<string[,], Tuple<int, float>> DepthFirstSearch(string[,] tiles, Tuple<int, int> start) {
         HashSet<Tuple<int, int>> exploredStates = new HashSet<Tuple<int, int>>(); 
         Stack<Node> stackFrontier = new Stack<Node>();
+
+        float timeTaken = 0;
+        int exploredCount = 0;
 
         Node startNode = new Node(start, null);
         stackFrontier.Push(startNode);
@@ -131,6 +147,7 @@ public class Algorithms {
                 }    
             }
 
+            exploredCount++;
             exploredStates.Add(current.state);
 
             foreach(Tuple<int, int> state in FindNeighbours(current.state)) { 
@@ -142,31 +159,36 @@ public class Algorithms {
                         if (!StatePresent(stackFrontier, state)) {
                             Node child = new Node(state, current);
                             stackFrontier.Push(child);
-                        } else {
-                            Debug.Log($"Tile {x} {y} is already in the frontier!");
                         }
-                    } else {
-                        Debug.Log($"Tile {x} {y} is a wall!");
                     }
-                } else {
-                    Debug.Log($"Tile {x} {y} has already been explored!");
                 }
             } 
         }
 
-        return tiles;
+        Tuple<string[,], Tuple<int, float>> results = new Tuple<string[,], Tuple<int, float>>(
+            tiles,
+            new Tuple<int, float>(exploredCount, timeTaken)
+        );
+
+        return results;
     } 
-    public static string[,] AStarSearch(string[,] tiles, Tuple<int, int> start, Tuple<int, int> target) {
+    public static Tuple<string[,], Tuple<int, float>> AStarSearch(string[,] tiles, Tuple<int, int> start, Tuple<int, int> target) {
         List<AStarNode> openList = new List<AStarNode>(); 
         List<AStarNode> closedList = new List<AStarNode>();
-        
+
+        float timeTaken = 0;
+        int exploredCount = 0;
+
         AStarNode startNode = new AStarNode(start, null, 0, ManhattanDistance(start, target));
         openList.Add(startNode);
 
-        while (openList.Count > 0) {
-            AStarNode lowestFNode = new AStarNode(null, null, int.MaxValue, ManhattanDistance(start, target));
+        bool solutionFound = false;
+
+        while (openList.Count > 0 && !solutionFound) {
+            AStarNode lowestFNode = null;
+    
             foreach (AStarNode node in openList) {
-                if (node.F < lowestFNode.F) {
+                if (lowestFNode == null || node.F < lowestFNode.F) {
                     lowestFNode = node;
                 }
             }
@@ -177,46 +199,48 @@ public class Algorithms {
                 int x = state.Item1;
                 int y = state.Item2;
 
+                AStarNode newNode = new AStarNode(state, 
+                                                  lowestFNode, 
+                                                  lowestFNode.G + 1, 
+                                                  ManhattanDistance(state, target));
+
                 if (tiles[x, y] != "x") {
-                    
+                    if (tiles[x, y] == "!") {
+                        solutionFound = true;
+                        Debug.Log("A* solution found!");
+
+                        AStarNode current = newNode.parent;
+
+                        while (current.parent != null) {
+                            tiles[current.state.Item1, current.state.Item2] = ",";
+                            current = current.parent;
+                        }
+                        break;
+                        
+                    } else {                    
+                        bool inOpen = StatePresentAndLower(openList, newNode.state, newNode.F);
+                        bool inClosed = StatePresentAndLower(closedList, newNode.state, newNode.F);
+                        
+                        if (!inOpen && !inClosed) {
+                            openList.Add(newNode);
+                        }
+                    }
                 }
             } 
+
+            if (solutionFound) {
+                break;
+            }
+
+            closedList.Add(lowestFNode);
+            exploredCount++;
         }
 
-        return tiles;
+        Tuple<string[,], Tuple<int, float>> results = new Tuple<string[,], Tuple<int, float>>(
+            tiles,
+            new Tuple<int, float>(exploredCount, timeTaken)
+        );
+
+        return results;
     }
 }
-
-// 1.  Initialize the open list
-// 2.  Initialize the closed list
-//     put the starting node on the open 
-//     list (you can leave its f at zero)
-// 3.  while the open list is not empty
-//     a) find the node with the least f on 
-//        the open list, call it "q"
-//     b) pop q off the open list
-  
-//     c) generate q's 8 successors and set their 
-//        parents to q
-   
-//     d) for each successor
-//         i) if successor is the goal, stop search
-        
-//         ii) else, compute both g and h for successor
-//           successor.g = q.g + distance between 
-//                               successor and q
-//           successor.h = distance from goal to 
-//           successor 
-          
-//           successor.f = successor.g + successor.h
-//         iii) if a node with the same position as 
-//             successor is in the OPEN list which has a 
-//            lower f than successor, skip this successor
-//         iV) if a node with the same position as 
-//             successor  is in the CLOSED list which has
-//             a lower f than successor, skip this successor
-//             otherwise, add  the node to the open list
-//      end (for loop)
-  
-//     e) push q on the closed list
-//     end (while loop)

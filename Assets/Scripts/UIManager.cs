@@ -7,6 +7,7 @@ using TMPro;
 public class UIManager : MonoBehaviour {
     public static UIManager Instance;
     [SerializeField] private GameObject startScreen;
+    [SerializeField] private GameObject resultScreen;
     [SerializeField] private GameObject errorBox;
     [SerializeField] private GameObject selectionScreen;
     [SerializeField] private GameObject tileScreen;
@@ -39,34 +40,48 @@ public class UIManager : MonoBehaviour {
 
         var resultsTuple = ConvertTilesToArray();
         string[,] convertedArray = resultsTuple.Item2;
+        string[,] original = ConvertTilesToArray().Item2;
 
         if (CheckEmpty(convertedArray)) {
             errorText.text = "Add some walls. Only start and end points present!";
             errorBox.SetActive(true);
         } else {
             string[,] solvedArray = new string[cols, rows];
+
+            Tuple<string[,], Tuple<int, float>> pathResults = null;
+
             Tuple<Tuple<int, int>, Tuple<int, int>> positions = resultsTuple.Item1;
             Tuple<int, int> startPos = positions.Item1;
             Tuple<int, int> endPos = positions.Item2;
             
             switch (buttonName) {
                 case "DFSButton":
-                    solvedArray = Algorithms.DepthFirstSearch(convertedArray, startPos);
+                    pathResults = Algorithms.DepthFirstSearch(convertedArray, startPos);
                     break;
 
                 case "BFSButton":
-                    solvedArray = Algorithms.BreadthFirstSearch(convertedArray, startPos);
+                    pathResults = Algorithms.BreadthFirstSearch(convertedArray, startPos);
                     break;
 
                 case "A*Button":
-                    solvedArray = Algorithms.AStarSearch(convertedArray, startPos, endPos);
+                    pathResults = Algorithms.AStarSearch(convertedArray, startPos, endPos);
                     break;
             }
+
+            solvedArray = pathResults.Item1;
             
-            if (CheckEqual(solvedArray, resultsTuple.Item2)) {
-                Debug.Log("Unsolved");
+            if (CheckEqual(solvedArray, original)) {
+                Debug.Log("No solution!");
+
+                errorText.text = "No solution found!";
+                errorBox.SetActive(true);
+            } else {
+                int exploredCount = pathResults.Item2.Item1;
+                float timeTaken = pathResults.Item2.Item2;
+
+                resultScreen.SetActive(true);
+                DisplayResults(solvedArray);
             }
-            DisplayResults(solvedArray);
         }
     }
     public void ChangeLabel(string label) {
@@ -240,16 +255,19 @@ public class UIManager : MonoBehaviour {
 
         return empty;
     }
-    private bool CheckEqual(string[,] original, string[,] modified) {
-        for (int i = 0; i < cols; i++) {
-            for (int j = 0; j < rows; j++) {
-                if (original[i, j] == modified[i, j]) {
-                    return true;
+    private bool CheckEqual(string[,] array1, string[,] array2) {
+        int rows = array1.GetLength(0);
+        int cols = array1.GetLength(1);
+
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                Debug.Log($"{array1[i, j]} {array2[i, j]}");
+                if (array1[i, j] != array2[i, j]) {
+                    return false;
                 }
             }
-        } 
-
-        return false;
+        }
+        return true;
     }
 }
 
