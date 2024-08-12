@@ -1,5 +1,6 @@
 using System; 
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Algorithms {
@@ -22,14 +23,6 @@ public class Algorithms {
     }
     private static bool StatePresent(Stack<Node> frontier, Tuple<int, int> state) {
         foreach (Node node in frontier) {
-            if (node.state.Equals(state)) {
-                return true;
-            }
-        }
-        return false;
-    }
-    private static bool StatePresent(List<AStarNode> frontier, Tuple<int, int> state) {
-        foreach (AStarNode node in frontier) {
             if (node.state.Equals(state)) {
                 return true;
             }
@@ -60,121 +53,10 @@ public class Algorithms {
 
         return possible;
     }
-    public static Tuple<string[,], Tuple<int, float>> BreadthFirstSearch(string[,] tiles, Tuple<int, int> start) {
-        HashSet<Tuple<int, int>> exploredStates = new HashSet<Tuple<int, int>>(); 
-        Queue<Node> queueFrontier = new Queue<Node>();
-
-        float timeTaken = 0;
-        int exploredCount = 0;
-
-        Node startNode = new Node(start, null);
-        queueFrontier.Enqueue(startNode);
-
-        while (queueFrontier.Count > 0) {
-            Node current = queueFrontier.Dequeue();
-
-            int cx = current.state.Item1;
-            int cy = current.state.Item2;
-
-            if (tiles[cx, cy] == "!") {
-                current = current.parent;
-                while (current.parent != null) {
-                    tiles[current.state.Item1, current.state.Item2] = ",";
-                    current = current.parent;
-                }
-
-                break;
-            } else {
-                if (tiles[cx, cy] != "*") {
-                    tiles[cx, cy] = "^";
-                }    
-            }
-
-            exploredCount++;
-            exploredStates.Add(current.state);
-
-            foreach(Tuple<int, int> state in FindNeighbours(current.state)) { 
-                int x = state.Item1;
-                int y = state.Item2;
-
-                if (!exploredStates.Contains(state)) {
-                    if (tiles[x, y] != "x") {
-                        if (!StatePresent(queueFrontier, state)) {
-                            Node child = new Node(state, current);
-                            queueFrontier.Enqueue(child);
-                        } 
-                    }
-                }
-            } 
-        }
-
-        Tuple<string[,], Tuple<int, float>> results = new Tuple<string[,], Tuple<int, float>>(
-            tiles,
-            new Tuple<int, float>(exploredCount, timeTaken)
-        );
-
-        return results;
-    }
-    public static Tuple<string[,], Tuple<int, float>> DepthFirstSearch(string[,] tiles, Tuple<int, int> start) {
-        HashSet<Tuple<int, int>> exploredStates = new HashSet<Tuple<int, int>>(); 
-        Stack<Node> stackFrontier = new Stack<Node>();
-
-        float timeTaken = 0;
-        int exploredCount = 0;
-
-        Node startNode = new Node(start, null);
-        stackFrontier.Push(startNode);
-
-        while (stackFrontier.Count > 0) {
-            Node current = stackFrontier.Pop();
-
-            int cx = current.state.Item1;
-            int cy = current.state.Item2;
-
-            if (tiles[cx, cy] == "!") {
-                current = current.parent;
-                while (current.parent != null) {
-                    tiles[current.state.Item1, current.state.Item2] = ",";
-                    current = current.parent;
-                }
-
-                break;
-            } else {
-                if (tiles[cx, cy] != "*") {
-                    tiles[cx, cy] = "^";
-                }    
-            }
-
-            exploredCount++;
-            exploredStates.Add(current.state);
-
-            foreach(Tuple<int, int> state in FindNeighbours(current.state)) { 
-                int x = state.Item1;
-                int y = state.Item2;
-
-                if (!exploredStates.Contains(state)) {
-                    if (tiles[x, y] != "x") {
-                        if (!StatePresent(stackFrontier, state)) {
-                            Node child = new Node(state, current);
-                            stackFrontier.Push(child);
-                        }
-                    }
-                }
-            } 
-        }
-
-        Tuple<string[,], Tuple<int, float>> results = new Tuple<string[,], Tuple<int, float>>(
-            tiles,
-            new Tuple<int, float>(exploredCount, timeTaken)
-        );
-
-        return results;
-    } 
-    public static Tuple<string[,], Tuple<int, float>> AStarSearch(string[,] tiles, Tuple<int, int> start, Tuple<int, int> target) {
+    public static Tuple<string[,], int> AStarSearch(string[,] tiles, Tuple<int, int> start, Tuple<int, int> target) {
         List<AStarNode> openList = new List<AStarNode>(); 
         List<AStarNode> closedList = new List<AStarNode>();
 
-        float timeTaken = 0;
         int exploredCount = 0;
 
         AStarNode startNode = new AStarNode(start, null, 0, ManhattanDistance(start, target));
@@ -198,7 +80,8 @@ public class Algorithms {
                 int x = state.Item1;
                 int y = state.Item2;
 
-                if (tiles[x, y] == "x" || StatePresent(closedList, state)) {
+                AStarNode existingClosed = closedList.Find(n => n.state.Equals(state));
+                if (tiles[x, y] == "x" || existingClosed != null) {
                     continue;
                 }
 
@@ -214,15 +97,14 @@ public class Algorithms {
                     }
                     break;
                 } else {
-                    bool inOpen = StatePresent(openList, state);
-                    AStarNode existing = openList.Find(n => n.state.Equals(newNode.state));
+                    AStarNode existingOpen = openList.Find(n => n.state.Equals(newNode.state));
 
-                    if (!inOpen) {
+                    if (existingOpen == null) {
                         openList.Add(newNode); 
-                    } else if (newNode.F < existing.F) {
-                        existing.parent = lowestFNode;
-                        existing.G = newNode.G;
-                        existing.H = newNode.H;
+                    } else if (newNode.F < existingOpen.F) {
+                        existingOpen.parent = lowestFNode;
+                        existingOpen.G = newNode.G;
+                        existingOpen.H = newNode.H;
                     }
                 }
             }
@@ -231,9 +113,87 @@ public class Algorithms {
         }
 
 
-        Tuple<string[,], Tuple<int, float>> results = new Tuple<string[,], Tuple<int, float>>(
+        Tuple<string[,], int> results = new Tuple<string[,], int>(
             tiles,
-            new Tuple<int, float>(exploredCount, timeTaken)
+            exploredCount
+        );
+
+        return results;
+    }
+    public static Tuple<string[,], int> DepthAndBreadthFirstSearch(string[,] tiles, Tuple<int, int> start, string mode) {
+        HashSet<Tuple<int, int>> exploredStates = new HashSet<Tuple<int, int>>();
+        int exploredCount = 0;
+
+        IEnumerable<Node> frontier;
+        Queue<Node> bfsFrontier = null;
+        Stack<Node> dfsFrontier = null;
+
+        Node startNode = new Node(start, null);
+
+        if (mode == "BFS") {
+            bfsFrontier = new Queue<Node>();
+            bfsFrontier.Enqueue(startNode);
+            frontier = bfsFrontier;
+        } else {
+            dfsFrontier = new Stack<Node>();
+            dfsFrontier.Push(startNode);
+            frontier = dfsFrontier;
+        }
+
+        while ((mode == "BFS" && bfsFrontier.Count > 0) || (mode != "BFS" && dfsFrontier.Count > 0))
+        {
+            Node current = mode == "BFS" ? bfsFrontier.Dequeue() : dfsFrontier.Pop();
+
+            int cx = current.state.Item1;
+            int cy = current.state.Item2;
+
+            if (tiles[cx, cy] == "!") {
+                current = current.parent;
+                while (current.parent != null) {
+                    tiles[current.state.Item1, current.state.Item2] = ",";
+                    current = current.parent;
+                }
+                break;
+            } else {
+                if (tiles[cx, cy] != "*") {
+                    tiles[cx, cy] = "^";
+                }    
+            }
+
+            exploredCount++;
+            exploredStates.Add(current.state);
+
+            foreach(Tuple<int, int> state in FindNeighbours(current.state)) { 
+                int x = state.Item1;
+                int y = state.Item2;
+
+                if (!exploredStates.Contains(state)) {
+                    if (tiles[x, y] != "x") {
+                        bool present = false;
+                        if (mode == "BFS") {
+                            present = StatePresent((Queue<Node>) frontier, state);
+                        } else {
+                            present = StatePresent((Stack<Node>) frontier, state);
+                        }
+
+                        if (!present) {
+                            Node child = new Node(state, current);
+
+                            if (mode == "BFS") {
+                                bfsFrontier.Enqueue(child);
+                            } else {
+                                dfsFrontier.Push(child);
+                            }
+                        } 
+                    }
+                }
+            } 
+        }
+
+        
+        Tuple<string[,], int> results = new Tuple<string[,], int>(
+            tiles,
+            exploredCount
         );
 
         return results;

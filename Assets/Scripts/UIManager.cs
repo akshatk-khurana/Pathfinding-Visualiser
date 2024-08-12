@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 using System; 
+using System.Diagnostics;
 using UnityEngine.UI;
 using TMPro;
 
@@ -52,19 +53,21 @@ public class UIManager : MonoBehaviour {
         } else {
             string[,] solvedArray = new string[cols, rows];
 
-            Tuple<string[,], Tuple<int, float>> pathResults = null;
+            Tuple<string[,], int> pathResults = null;
 
             Tuple<Tuple<int, int>, Tuple<int, int>> positions = resultsTuple.Item1;
             Tuple<int, int> startPos = positions.Item1;
             Tuple<int, int> endPos = positions.Item2;
             
+            var watch = Stopwatch.StartNew(); 
+
             switch (buttonName) {
                 case "DFS":
-                    pathResults = Algorithms.DepthFirstSearch(convertedArray, startPos);
+                    pathResults = Algorithms.DepthAndBreadthFirstSearch(convertedArray, startPos, "DFS");
                     break;
 
                 case "BFS":
-                    pathResults = Algorithms.BreadthFirstSearch(convertedArray, startPos);
+                    pathResults = Algorithms.DepthAndBreadthFirstSearch(convertedArray, startPos, "BFS");
                     break;
 
                 case "A*":
@@ -72,19 +75,20 @@ public class UIManager : MonoBehaviour {
                     break;
             }
 
+            watch.Stop();
+
             solvedArray = pathResults.Item1;
             
             if (CheckEqual(solvedArray, original)) {
-                Debug.Log("No solution!");
-
                 errorText.text = "No solution found!";
                 errorBox.SetActive(true);
             } else {
-                int exploredCount = pathResults.Item2.Item1;
-                float timeTaken = pathResults.Item2.Item2;
+                int exploredCount = pathResults.Item2;
+                float timeTaken = watch.ElapsedMilliseconds;
 
-                countText.text = exploredCount.ToString();
-                timeText.text = timeTaken.ToString();
+                countText.text = $"States Explored: {exploredCount}";
+                timeText.text = $"Time taken: {timeTaken} ms";
+                algorithmText.text = $"Algorithm used: {buttonName}";
 
                 resultScreen.SetActive(true);
                 DisplayResults(solvedArray);
