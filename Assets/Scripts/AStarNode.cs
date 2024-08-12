@@ -5,7 +5,7 @@ public class AStarNode {
     public AStarNode parent;
     public int F;
     public int G;
-    private int H;
+    public int H;
     public AStarNode(Tuple<int, int> givenState, AStarNode givenParent, int g, int h) {
         state = givenState;
         parent = givenParent;

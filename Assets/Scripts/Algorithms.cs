@@ -28,12 +28,10 @@ public class Algorithms {
         }
         return false;
     }
-    private static bool StatePresentAndLower(List<AStarNode> frontier, Tuple<int, int> state, int F) {
+    private static bool StatePresent(List<AStarNode> frontier, Tuple<int, int> state) {
         foreach (AStarNode node in frontier) {
             if (node.state.Equals(state)) {
-                if (node.F < F) {
-                    return true;
-                }
+                return true;
             }
         }
         return false;
@@ -186,7 +184,7 @@ public class Algorithms {
 
         while (openList.Count > 0 && !solutionFound) {
             AStarNode lowestFNode = null;
-    
+
             foreach (AStarNode node in openList) {
                 if (lowestFNode == null || node.F < lowestFNode.F) {
                     lowestFNode = node;
@@ -194,47 +192,44 @@ public class Algorithms {
             }
 
             openList.Remove(lowestFNode);
+            closedList.Add(lowestFNode);
 
-            foreach(Tuple<int, int> state in FindNeighbours(lowestFNode.state)) { 
+            foreach (Tuple<int, int> state in FindNeighbours(lowestFNode.state)) { 
                 int x = state.Item1;
                 int y = state.Item2;
 
-                AStarNode newNode = new AStarNode(state, 
-                                                  lowestFNode, 
-                                                  lowestFNode.G + 1, 
-                                                  ManhattanDistance(state, target));
+                if (tiles[x, y] == "x" || StatePresent(closedList, state)) {
+                    continue;
+                }
 
-                if (tiles[x, y] != "x") {
-                    if (tiles[x, y] == "!") {
-                        solutionFound = true;
-                        Debug.Log("A* solution found!");
+                AStarNode newNode = new AStarNode(state, lowestFNode, lowestFNode.G + 1, ManhattanDistance(state, target));
 
-                        AStarNode current = newNode.parent;
+                if (tiles[x, y] == "!") {
+                    solutionFound = true;
+                    AStarNode current = newNode.parent;
 
-                        while (current.parent != null) {
-                            tiles[current.state.Item1, current.state.Item2] = ",";
-                            current = current.parent;
-                        }
-                        break;
-                        
-                    } else {                    
-                        bool inOpen = StatePresentAndLower(openList, newNode.state, newNode.F);
-                        bool inClosed = StatePresentAndLower(closedList, newNode.state, newNode.F);
-                        
-                        if (!inOpen && !inClosed) {
-                            openList.Add(newNode);
-                        }
+                    while (current.parent != null) {
+                        tiles[current.state.Item1, current.state.Item2] = ",";
+                        current = current.parent;
+                    }
+                    break;
+                } else {
+                    bool inOpen = StatePresent(openList, state);
+                    AStarNode existing = openList.Find(n => n.state.Equals(newNode.state));
+
+                    if (!inOpen) {
+                        openList.Add(newNode); 
+                    } else if (newNode.F < existing.F) {
+                        existing.parent = lowestFNode;
+                        existing.G = newNode.G;
+                        existing.H = newNode.H;
                     }
                 }
-            } 
-
-            if (solutionFound) {
-                break;
             }
 
-            closedList.Add(lowestFNode);
             exploredCount++;
         }
+
 
         Tuple<string[,], Tuple<int, float>> results = new Tuple<string[,], Tuple<int, float>>(
             tiles,

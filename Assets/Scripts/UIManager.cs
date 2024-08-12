@@ -14,6 +14,10 @@ public class UIManager : MonoBehaviour {
     [SerializeField] private GameObject helpScreen;
     [SerializeField] private TextMeshProUGUI errorText;
     [SerializeField] private TextMeshProUGUI toolTipLabel;
+    [SerializeField] private TextMeshProUGUI countText;
+    [SerializeField] private TextMeshProUGUI timeText;
+    [SerializeField] private TextMeshProUGUI algorithmText;
+
     GameManager gm;
     public int rows = 15;
     public int cols = 32;
@@ -55,15 +59,15 @@ public class UIManager : MonoBehaviour {
             Tuple<int, int> endPos = positions.Item2;
             
             switch (buttonName) {
-                case "DFSButton":
+                case "DFS":
                     pathResults = Algorithms.DepthFirstSearch(convertedArray, startPos);
                     break;
 
-                case "BFSButton":
+                case "BFS":
                     pathResults = Algorithms.BreadthFirstSearch(convertedArray, startPos);
                     break;
 
-                case "A*Button":
+                case "A*":
                     pathResults = Algorithms.AStarSearch(convertedArray, startPos, endPos);
                     break;
             }
@@ -78,6 +82,9 @@ public class UIManager : MonoBehaviour {
             } else {
                 int exploredCount = pathResults.Item2.Item1;
                 float timeTaken = pathResults.Item2.Item2;
+
+                countText.text = exploredCount.ToString();
+                timeText.text = timeTaken.ToString();
 
                 resultScreen.SetActive(true);
                 DisplayResults(solvedArray);
@@ -261,7 +268,6 @@ public class UIManager : MonoBehaviour {
 
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
-                Debug.Log($"{array1[i, j]} {array2[i, j]}");
                 if (array1[i, j] != array2[i, j]) {
                     return false;
                 }
